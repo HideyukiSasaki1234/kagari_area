@@ -459,29 +459,43 @@ function save() {
 }
 
 // ===== SETUP =====
-function setupArea(key) { state.areaKey = key; save(); initArea(); }
+function setupArea(key) {
+  state.areaKey = key;
+  save();
+  initArea();
+}
 function resetArea() {
   if (!confirm('エリア設定をリセットしますか？')) return;
   state.areaKey = null; storageRemove('su_area'); goScreen('screen-setup');
 }
 function initArea() {
-  const key = state.areaKey;
-  if (!key) { goScreen('screen-setup'); return; }
-  const info = SPACE_INFO[key];
-  ['top','mem','time','inuse','admin'].forEach(p => {
-    const n = document.getElementById(p+'-area-name');
-    const r = document.getElementById(p+'-area-reading');
-    if (n) n.textContent = info.name;
-    if (r) r.textContent = info.reading;
-  });
-  document.getElementById('top-area-loc').textContent = info.loc;
-  document.getElementById('log-section-title').textContent = `📋 利用ログ（${info.name}）`;
-  const s = state.session;
-  if (s && s.active) {
-    if (new Date(s.endTime) <= new Date()) autoCheckout();
-    else { showInuse(); return; }
+  try {
+    const key = state.areaKey;
+    if (!key) { goScreen('screen-setup'); return; }
+    const info = SPACE_INFO[key];
+    ['top','mem','time','inuse','admin'].forEach(p => {
+      const n = document.getElementById(p+'-area-name');
+      const r = document.getElementById(p+'-area-reading');
+      if (n) n.textContent = info.name;
+      if (r) r.textContent = info.reading;
+    });
+    document.getElementById('top-area-loc').textContent = info.loc;
+    document.getElementById('log-section-title').textContent = `📋 利用ログ（${info.name}）`;
+    const s = state.session;
+    if (s && s.active) {
+      if (new Date(s.endTime) <= new Date()) autoCheckout();
+      else { showInuse(); return; }
+    }
+    goScreen('screen-top');
+  } catch(e) {
+    // データが壊れている場合はリセット
+    storageRemove('su_session');
+    storageRemove('su_members');
+    state.session = null;
+    state.members = DEFAULT_MEMBERS.map(m => ({...m}));
+    save();
+    goScreen('screen-top');
   }
-  goScreen('screen-top');
 }
 
 // ===== NAV =====
