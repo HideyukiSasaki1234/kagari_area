@@ -324,6 +324,7 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
             <input class="admin-input" id="new-member-reading" placeholder="よみがな（例：やまだ たろう）">
             <button class="btn-icon" onclick="addMember()">追加</button>
           </div>
+          <button class="reset-area-btn" onclick="resetMembers()" style="margin-bottom:8px">🔄 従業員リストを初期化（最新データに更新）</button>
           <div class="member-list" id="admin-member-list"></div>
         </div>
       </div>
@@ -375,62 +376,79 @@ const SPACE_INFO = {
 };
 
 const DEFAULT_MEMBERS = [
-  {name:"相 空知",        reading:"あい そらち",          email:"sorachi.ai"},
-  {name:"青山 貴海",      reading:"あおやま たかみ",      email:"aoyama"},
-  {name:"浅沼 麻衣",      reading:"あさぬま まい",        email:"mai.asanuma"},
-  {name:"五十嵐 恵",      reading:"いがらし めぐみ",      email:"megumi.igarashi"},
-  {name:"石川 遥也",      reading:"いしかわ はるや",      email:"haruya.ishikawa"},
-  {name:"入江 日和子",    reading:"いりえ ひなこ",        email:"h.irie"},
-  {name:"江並 友紀",      reading:"えなみ ゆき",          email:"support"},
-  {name:"大島 由華",      reading:"おおしま ゆか",        email:"yuka.oshima"},
-  {name:"片岡 健太郎",    reading:"かたおか けんたろう",  email:"kentaro.kataoka"},
-  {name:"木下 秀治",      reading:"きのした ひではる",    email:"kinoshita"},
-  {name:"楠 由香莉",      reading:"くすのき ゆかり",      email:"yukari.kusunoki"},
-  {name:"許斐 夕紀恵",    reading:"このみ ゆきえ",        email:"yukie.konomi"},
-  {name:"坂爪 純子",      reading:"さかづめ よしこ",      email:"yoshiko.sakazume"},
-  {name:"佐々木 秀征",    reading:"ささき ひでゆき",      email:"hideyuki.sasaki"},
-  {name:"笹野 ひより",    reading:"ささの ひより",        email:"hiyori.sasano"},
-  {name:"Pandey Shreyansh",reading:"しゅれい",            email:"shreyansh.pandey"},
-  {name:"杉山 守",        reading:"すぎやま まもる",      email:"m.sugiyama"},
-  {name:"戴 世高",        reading:"たい せいこう",        email:"s.tai"},
-  {name:"谷口 麻子",      reading:"たにぐち あさこ",      email:"asako.taniguchi"},
-  {name:"中野 諒",        reading:"なかの りょう",        email:"ryo.nakano"},
-  {name:"那須 瑶香",      reading:"なす ようか",          email:"y.nasu"},
-  {name:"福本 琴子",      reading:"ふくもと ことこ",      email:"kotoko.fukumoto"},
-  {name:"古野 佑気",      reading:"ふるの ゆうき",        email:"yuki.furuno"},
-  {name:"星野 直子",      reading:"ほしの なおこ",        email:"naoko.hoshino"},
-  {name:"松林 尚史",      reading:"まつばやし なおふみ",  email:"naofumi.matsubayashi"},
-  {name:"松本 理恵",      reading:"まつもと りえ",        email:"rie.matsumoto"},
-  {name:"三浦 耕生",      reading:"みうら こうき",        email:"koki.miura"},
-  {name:"三浦 隆之",      reading:"みうら たかゆき",      email:"takayuki.miura"},
-  {name:"向井 大倭",      reading:"むかい やまと",        email:"yamato.mukai"},
-  {name:"横山 隆太郎",    reading:"よこやま りゅうたろう",email:"ryutaro.yokoyama"},
-  {name:"吉原 清楓",      reading:"よしはら さやか",      email:"s.yoshihara"},
-  {name:"上原 涼慈",      reading:"",                     email:"ryoji.uehara"},
-  {name:"上野 弘道",      reading:"",                     email:"hiromichi.ueno"},
-  {name:"井口 龍",        reading:"",                     email:"ryu.iguchi"},
-  {name:"伊藤 飛鳥",      reading:"",                     email:"asuka.ito"},
-  {name:"増川 孔明",      reading:"",                     email:"komei.masukawa15"},
-  {name:"小林 雄志",      reading:"",                     email:"yuji.kobayashi"},
-  {name:"張 泰瑋",        reading:"",                     email:"taii.chou"},
-  {name:"波多野 彩杜",    reading:"",                     email:"saito.hatano"},
-  {name:"浅井 元",        reading:"",                     email:"gen.asai"},
-  {name:"羽山 香澄",      reading:"",                     email:"kasumi.hayama"},
-  {name:"野田 万琴",      reading:"",                     email:"makoto.noda"},
-  {name:"関口 愛海",      reading:"",                     email:"manami.sekiguchi"},
-  {name:"陳 巍",          reading:"",                     email:"wei.chen"},
-  {name:"飯塚 直樹",      reading:"",                     email:"naoki.iizuka"},
-  {name:"高原 朔美",      reading:"",                     email:"sakumi.takahara"},
+  {name:"相 空知",          reading:"あい そらち",          email:"sorachi.ai"},
+  {name:"青山 貴海",        reading:"あおやま たかみ",      email:"aoyama"},
+  {name:"浅井 元",          reading:"あさい げん",          email:"gen.asai"},
+  {name:"浅沼 麻衣",        reading:"あさぬま まい",        email:"mai.asanuma"},
+  {name:"飯塚 直樹",        reading:"いいづか なおき",      email:"naoki.iizuka"},
+  {name:"五十嵐 恵",        reading:"いがらし めぐみ",      email:"megumi.igarashi"},
+  {name:"井口 龍",          reading:"いぐち りゅう",        email:"ryu.iguchi"},
+  {name:"石川 遥也",        reading:"いしかわ はるや",      email:"haruya.ishikawa"},
+  {name:"伊藤 飛鳥",        reading:"いとう あすか",        email:"asuka.ito"},
+  {name:"入江 日和子",      reading:"いりえ ひなこ",        email:"h.irie"},
+  {name:"上野 弘道",        reading:"うえの ひろみち",      email:"hiromichi.ueno"},
+  {name:"上原 涼慈",        reading:"うえはら りょうじ",    email:"ryoji.uehara"},
+  {name:"江並 友紀",        reading:"えなみ ゆき",          email:"support"},
+  {name:"大島 由華",        reading:"おおしま ゆか",        email:"yuka.oshima"},
+  {name:"片岡 健太郎",      reading:"かたおか けんたろう",  email:"kentaro.kataoka"},
+  {name:"木下 秀治",        reading:"きのした ひではる",    email:"kinoshita"},
+  {name:"楠 由香莉",        reading:"くすのき ゆかり",      email:"yukari.kusunoki"},
+  {name:"許斐 夕紀恵",      reading:"このみ ゆきえ",        email:"yukie.konomi"},
+  {name:"小林 雄志",        reading:"こばやし ゆうじ",      email:"yuji.kobayashi"},
+  {name:"坂爪 純子",        reading:"さかづめ よしこ",      email:"yoshiko.sakazume"},
+  {name:"佐々木 秀征",      reading:"ささき ひでゆき",      email:"hideyuki.sasaki"},
+  {name:"笹野 ひより",      reading:"ささの ひより",        email:"hiyori.sasano"},
+  {name:"Pandey Shreyansh", reading:"しゅれい",             email:"shreyansh.pandey"},
+  {name:"杉山 守",          reading:"すぎやま まもる",      email:"m.sugiyama"},
+  {name:"関口 愛海",        reading:"せきぐち まなみ",      email:"manami.sekiguchi"},
+  {name:"戴 世高",          reading:"たい せいこう",        email:"s.tai"},
+  {name:"高原 朔美",        reading:"たかはら さくみ",      email:"sakumi.takahara"},
+  {name:"谷口 麻子",        reading:"たにぐち あさこ",      email:"asako.taniguchi"},
+  {name:"張 泰瑋",          reading:"ちょう たいい",        email:"taii.chou"},
+  {name:"陳 巍",            reading:"ちん ぎ",              email:"wei.chen"},
+  {name:"中野 諒",          reading:"なかの りょう",        email:"ryo.nakano"},
+  {name:"長沼 斉寿",        reading:"ながぬま よしひさ",    email:""},
+  {name:"那須 瑶香",        reading:"なす ようか",          email:"y.nasu"},
+  {name:"野田 万琴",        reading:"のだ まこと",          email:"makoto.noda"},
+  {name:"波多野 彩杜",      reading:"はたの さいと",        email:"saito.hatano"},
+  {name:"羽山 香澄",        reading:"はやま かすみ",        email:"kasumi.hayama"},
+  {name:"福本 琴子",        reading:"ふくもと ことこ",      email:"kotoko.fukumoto"},
+  {name:"古野 佑気",        reading:"ふるの ゆうき",        email:"yuki.furuno"},
+  {name:"星野 直子",        reading:"ほしの なおこ",        email:"naoko.hoshino"},
+  {name:"増川 孔明",        reading:"ますかわ こうめい",    email:"komei.masukawa15"},
+  {name:"松林 尚史",        reading:"まつばやし なおふみ",  email:"naofumi.matsubayashi"},
+  {name:"松本 理恵",        reading:"まつもと りえ",        email:"rie.matsumoto"},
+  {name:"三浦 耕生",        reading:"みうら こうき",        email:"koki.miura"},
+  {name:"三浦 隆之",        reading:"みうら たかゆき",      email:"takayuki.miura"},
+  {name:"向井 大倭",        reading:"むかい やまと",        email:"yamato.mukai"},
+  {name:"横山 隆太郎",      reading:"よこやま りゅうたろう",email:"ryutaro.yokoyama"},
+  {name:"吉原 清楓",        reading:"よしはら さやか",      email:"s.yoshihara"},
 ];
 
 let state = {
   areaKey:  storageGet('su_area') || null,
-  members:  JSON.parse(storageGet('su_members') || 'null') || DEFAULT_MEMBERS.map(m=>({...m})),
+  members:  null,
   logs:     JSON.parse(storageGet('su_logs') || '[]'),
   session:  JSON.parse(storageGet('su_session') || 'null'),
   selectedMembers: [],
   selectedMinutes: null,
 };
+
+// メンバーデータのマイグレーション（古い文字列形式 → 新しいオブジェクト形式）
+const savedMembers = JSON.parse(storageGet('su_members') || 'null');
+if (!savedMembers) {
+  // 初回：DEFAULTをそのまま使う
+  state.members = DEFAULT_MEMBERS.map(m => ({...m}));
+} else if (savedMembers.length > 0 && typeof savedMembers[0] === 'string') {
+  // 古い文字列形式の場合：DEFAULT_MEMBERSのデータで補完
+  state.members = savedMembers.map(name => {
+    const found = DEFAULT_MEMBERS.find(m => m.name === name);
+    return found ? {...found} : {name, reading: '', email: ''};
+  });
+  storageSet('su_members', JSON.stringify(state.members));
+} else {
+  state.members = savedMembers;
+}
 let timerInterval = null;
 
 function save() {
@@ -655,7 +673,12 @@ function recordLog(auto) {
 }
 
 // ===== ADMIN =====
-function renderAdminMembers() {
+function resetMembers() {
+  if (!confirm('従業員リストを最新データにリセットします。手動追加したメンバーは削除されます。よいですか？')) return;
+  state.members = DEFAULT_MEMBERS.map(m => ({...m}));
+  save(); renderAdminMembers();
+  showToast('従業員リストを初期化しました');
+}
   document.getElementById('admin-member-list').innerHTML = state.members.map(m=>{
     const name = (typeof m === 'string') ? m : m.name;
     const reading = (typeof m === 'string') ? '' : (m.reading || '');
