@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style>
+* { box-sizing: border-box; }
+</style>
+<title>スタンドアップコーナー</title>
+<style>
+:root{--bg:#1C1A17;--surface:#252219;--card:#2E2A22;--border:#3D3829;--accent:#D4813A;--accent2:#E8B86D;--text:#F2EDE4;--text-muted:#8A8070;--text-sub:#B8AA96;--green:#6AAF6A;--red:#E05A5A;--radius:14px;--radius-sm:8px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Hiragino Sans','Noto Sans JP',sans-serif;font-size:140%;}
+.screen{display:none;width:100%;height:100vh;}
+.screen.active{display:flex;}
+.sidebar{width:280px;height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:26px 20px;flex-shrink:0;}
+.sidebar-logo{text-align:center;margin-bottom:22px;}
+.flame-icon{font-size:36px;animation:flicker 2s ease-in-out infinite;display:block;margin-bottom:6px;}
+@keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(1.06)}}
+.logo-area-name{font-size:38px;font-weight:900;color:var(--accent2);letter-spacing:.15em;line-height:1;}
+.logo-area-reading{font-size:13px;color:var(--text-muted);margin-top:4px;letter-spacing:.1em;}
+.logo-area-loc{font-size:12px;color:var(--text-sub);margin-top:6px;}
+.status-badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-top:8px;}
+.status-available{background:rgba(106,175,106,.15);color:var(--green);}
+.status-inuse{background:rgba(212,129,58,.2);color:var(--accent);}
+.sidebar-footer{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
+.admin-btn{width:100%;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);font-size:12px;padding:9px;cursor:pointer;}
+.admin-btn:hover{border-color:var(--accent);color:var(--text);}
+.main{flex:1;height:100vh;overflow-y:auto;padding:26px 30px;display:flex;flex-direction:column;}
+.main::-webkit-scrollbar{width:3px;}
+.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.setup-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+.setup-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:540px;}
+.setup-card{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;}
+.setup-card:active{transform:scale(.96);}
+.setup-card:hover{border-color:var(--accent);}
+.setup-card .sc-kanji{font-size:50px;font-weight:900;color:var(--accent2);letter-spacing:.1em;}
+.setup-card .sc-reading{font-size:14px;color:var(--text-muted);margin-top:6px;letter-spacing:.1em;}
+.setup-card .sc-loc{font-size:12px;color:var(--text-sub);margin-top:8px;}
+.section-label{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+.steps{display:flex;gap:6px;align-items:center;margin-bottom:22px;}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
+.step-dot.done{background:var(--accent);}
+.step-dot.active{background:var(--accent2);width:28px;border-radius:4px;}
+.step-label{font-size:12px;color:var(--text-muted);margin-left:8px;}
+.member-search{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;padding:10px 14px;margin-bottom:10px;outline:none;}
+.member-search:focus{border-color:var(--accent);}
+.member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px;margin-bottom:12px;flex:1;overflow-y:auto;}
+.member-chip{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 3px;text-align:center;cursor:pointer;transition:all .15s;}
+.member-chip:active{transform:scale(.95);}
+.member-chip.selected{border-color:var(--accent);background:#2E2515;}
+.m-avatar{width:34px;height:34px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent2);margin:0 auto 4px;}
+.member-chip.selected .m-avatar{background:var(--accent);color:#fff;}
+.m-name{font-size:10px;color:var(--text-sub);line-height:1.3;}
+.member-chip.selected .m-name{color:var(--text);}
+.time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.time-btn{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 6px;text-align:center;cursor:pointer;transition:all .15s;}
+.time-btn:active{transform:scale(.96);}
+.time-btn.selected{border-color:var(--accent);background:#2E2515;}
+.t-min{font-size:26px;font-weight:800;color:var(--accent2);}
+.t-label{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.time-btn.selected .t-min{color:var(--accent);}
+@media(max-width:900px){
+  .sidebar{width:200px;padding:16px 12px;}
+  .logo-area-name{font-size:26px;}
+  .logo-area-reading{font-size:11px;}
+  .logo-area-loc{font-size:11px;}
+  .flame-icon{font-size:28px;margin-bottom:4px;}
+  .sidebar-logo{margin-bottom:14px;}
+  .admin-layout{grid-template-columns:1fr;}
+  .main{padding:16px 18px;}
+  .hint-box{font-size:11px;line-height:1.7;padding:10px 12px;}
+  .hint-box .hint-title{margin-bottom:5px;}
+  .btn{padding:10px 14px;font-size:14px;}
+  .status-badge{font-size:11px;padding:3px 9px;}
+}
+.btn{padding:12px 18px;border-radius:var(--radius);font-size:15px;font-weight:700;border:none;cursor:pointer;letter-spacing:.04em;transition:all .15s;}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:disabled{background:var(--border);color:var(--text-muted);cursor:not-allowed;}
+.btn-secondary{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-full{width:100%;}
+.back-btn{background:none;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;margin-bottom:16px;}
+.sel-preview{flex:1;overflow:hidden;}
+.sel-count-text{font-size:13px;color:var(--text-sub);margin-bottom:7px;}
+.sel-count-text span{color:var(--accent2);font-weight:700;}
+.sel-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.sel-tag{background:var(--accent);color:#fff;font-size:11px;padding:3px 7px;border-radius:11px;}
+.confirm-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--text-sub);line-height:2;}
+.confirm-card b{color:var(--text);}
+.timer-col{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;}
+.timer-ring{width:210px;height:210px;position:relative;margin-bottom:10px;}
+.timer-ring svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:10;}
+.ring-fg{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s;}
+.timer-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.timer-remaining{font-size:40px;font-weight:900;color:var(--accent2);line-height:1;}
+.timer-lbl{font-size:11px;color:var(--text-muted);margin-top:4px;}
+.inuse-info{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;margin-bottom:14px;}
+.inuse-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.inuse-row:last-child{border-bottom:none;}
+.inuse-key{color:var(--text-muted);flex-shrink:0;margin-right:10px;}
+.inuse-val{color:var(--text);font-weight:500;text-align:right;}
+.hint-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;font-size:12px;color:var(--text-sub);line-height:1.9;}
+.hint-box .hint-title{font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:7px;letter-spacing:.06em;}
+.admin-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.admin-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+.admin-section-title{font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:11px;letter-spacing:.06em;}
+.admin-input-row{display:flex;gap:7px;margin-bottom:9px;}
+.admin-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:7px 10px;outline:none;}
+.admin-input:focus{border-color:var(--accent);}
+.btn-icon{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:7px 13px;font-size:13px;cursor:pointer;font-weight:700;white-space:nowrap;}
+.member-list{display:flex;flex-wrap:wrap;gap:5px;max-height:150px;overflow-y:auto;margin-top:4px;}
+.member-list-tag{display:flex;align-items:center;gap:5px;background:var(--border);color:var(--text-sub);font-size:12px;padding:4px 8px;border-radius:14px;}
+.del-btn{color:var(--text-muted);cursor:pointer;font-size:13px;background:none;border:none;padding:0;line-height:1;}
+.del-btn:hover{color:var(--red);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:var(--surface);color:var(--text-muted);padding:7px;text-align:left;border-bottom:1px solid var(--border);font-weight:600;position:sticky;top:0;}
+td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
+.log-wrap{max-height:220px;overflow-y:auto;}
+.log-wrap::-webkit-scrollbar{width:3px;}
+.log-wrap::-webkit-scrollbar-thumb{background:var(--border);}
+.log-actions{display:flex;gap:6px;margin-bottom:9px;}
+.reset-area-btn{width:100%;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);font-size:12px;padding:7px;cursor:pointer;}
+.reset-area-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+.log-count{font-size:12px;color:var(--text-muted);margin-bottom:8px;}
+.log-count span{color:var(--accent2);font-weight:700;}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;font-weight:600;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="screen active" id="screen-setup">
+  <div class="main" style="align-items:center;justify-content:center">
+    <div class="setup-center">
+      <div style="text-align:center">
+        <div style="font-size:42px;margin-bottom:10px">🔥</div>
+        <div style="font-size:20px;font-weight:800;color:var(--accent2);letter-spacing:.08em;margin-bottom:5px">スタンドアップコーナー</div>
+        <div style="font-size:13px;color:var(--text-muted)">このiPadのエリアを選択してください</div>
+      </div>
+      <div class="setup-cards">
+        <div class="setup-card" onclick="setupArea('kagari')">
+          <div class="sc-kanji">篝</div><div class="sc-reading">Kagari</div><div class="sc-loc">入口付近</div>
+        </div>
+        <div class="setup-card" onclick="setupArea('tomoshibi')">
+          <div class="sc-kanji">燈</div><div class="sc-reading">Tomoshibi</div><div class="sc-loc">ブレイクスペース付近</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted)">※ 設定後は管理画面から変更できます</div>
+      <button onclick="hardReset()" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;text-decoration:underline">動作がおかしい場合はここをタップ</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP -->
+<div class="screen" id="screen-top">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="flame-icon">🔥</span>
+      <div class="logo-area-name" id="top-area-name">篝</div>
+      <div class="logo-area-reading" id="top-area-reading">Kagari</div>
+      <div class="logo-area-loc" id="top-area-loc">入口付近</div>
+      <div class="status-badge status-available">● 利用可能</div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="hint-box">
+        <div class="hint-title">利用の流れ</div>
+        <div>① 2名以上を選択</div>
+        <div>② 時間を選択（15分単位）</div>
+        <div>③ チェックイン → <span style="white-space:nowrap">お菓子どうぞ 🍬</span></div>
+        <div>④ 終了時にチェックアウト</div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn btn-primary btn-full" onclick="startCheckin()">チェックインする</button>
+      <button class="admin-btn" id="admin-entry-btn" onclick="goAdmin()" style="display:none">⚙️ 管理・ログ出力</button>
+    </div>
+  </div>
+  <div class="main" style="align-items:center;justify-content:center">
+    <div style="text-align:center">
+      <div style="font-size:80px;margin-bottom:16px;opacity:.25">🔥</div>
+      <div style="font-size:15px;color:var(--text-sub);line-height:2.2">このエリアは現在利用可能です。<br>左の「チェックインする」から利用を開始してください。</div>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBER SELECT -->
+<div class="screen" id="screen-members">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="flame-icon" style="font-size:26px">🔥</span>
+      <div class="logo-area-name" id="mem-area-name" style="font-size:30px">篝</div>
+      <div class="logo-area-reading" id="mem-area-reading">Kagari</div>
+    </div>
+    <div class="sel-preview">
+      <div class="section-label">選択中</div>
+      <div class="sel-count-text"><span id="sel-count">0</span> 名（2名以上必要）</div>
+      <div class="sel-tags" id="sel-tags"></div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="back-btn" onclick="goScreen('screen-top')">← 戻る</button>
+      <button class="btn btn-primary btn-full" id="btn-next-time" onclick="goToTime()" disabled>時間選択へ →</button>
+    </div>
+  </div>
+  <div class="main" style="overflow:hidden;">
+    <div class="steps">
+      <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
+      <span class="step-label">利用者を選択（2名以上）</span>
+    </div>
+    <div class="section-label">従業員を選択</div>
+    <input class="member-search" id="member-search" placeholder="名前で絞り込む" oninput="filterMembers()">
+    <div class="member-grid" id="member-grid"></div>
+  </div>
+</div>
+
+<!-- TIME SELECT -->
+<div class="screen" id="screen-time">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="flame-icon" style="font-size:26px">⏱️</span>
+      <div class="logo-area-name" id="time-area-name" style="font-size:30px">篝</div>
+      <div class="logo-area-reading" id="time-area-reading">Kagari</div>
+    </div>
+    <div style="flex:1">
+      <div class="section-label">確認内容</div>
+      <div class="confirm-card" id="confirm-card">－</div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="back-btn" onclick="goScreen('screen-members')">← 戻る</button>
+      <button class="btn btn-primary btn-full" id="btn-checkin" onclick="doCheckin()" disabled>🔥 チェックイン</button>
+    </div>
+  </div>
+  <div class="main" style="justify-content:center">
+    <div class="steps">
+      <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
+      <span class="step-label">利用時間を選択</span>
+    </div>
+    <div class="section-label">利用時間（15分単位）</div>
+    <div class="time-grid">
+      <div class="time-btn" onclick="selectTime(15)"><div class="t-min">15</div><div class="t-label">分</div></div>
+      <div class="time-btn" onclick="selectTime(30)"><div class="t-min">30</div><div class="t-label">分</div></div>
+      <div class="time-btn" onclick="selectTime(45)"><div class="t-min">45</div><div class="t-label">分</div></div>
+      <div class="time-btn" onclick="selectTime(60)"><div class="t-min">60</div><div class="t-label">分</div></div>
+      <div class="time-btn" onclick="selectTime(75)"><div class="t-min">75</div><div class="t-label">分</div></div>
+      <div class="time-btn" onclick="selectTime(90)"><div class="t-min">90</div><div class="t-label">分</div></div>
+      <div class="time-btn" onclick="selectTime(105)"><div class="t-min">105</div><div class="t-label">分</div></div>
+      <div class="time-btn" onclick="selectTime(120)"><div class="t-min">120</div><div class="t-label">分</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- IN-USE -->
+<div class="screen" id="screen-inuse">
+  <div class="sidebar">
+    <div class="sidebar-logo" style="margin-bottom:12px">
+      <span class="flame-icon">🔥</span>
+      <div class="logo-area-name" id="inuse-area-name" style="font-size:30px">篝</div>
+      <div class="logo-area-reading" id="inuse-area-reading">Kagari</div>
+      <div class="status-badge status-inuse" style="margin-top:6px">● 利用中</div>
+    </div>
+    <div class="timer-col">
+      <div class="timer-ring">
+        <svg viewBox="0 0 210 210" width="210" height="210">
+          <circle class="ring-bg" cx="105" cy="105" r="91"/>
+          <circle class="ring-fg" id="timer-ring-fg" cx="105" cy="105" r="91" stroke-dasharray="571.8" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-center">
+          <div class="timer-remaining" id="timer-remaining">--:--</div>
+          <div class="timer-lbl">残り時間</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer" style="gap:9px">
+      <button class="btn btn-secondary btn-full" onclick="doExtend()">＋15分 延長</button>
+      <button class="btn btn-danger btn-full" onclick="doCheckout()">チェックアウト</button>
+    </div>
+  </div>
+  <div class="main" style="justify-content:center">
+    <div class="inuse-info">
+      <div class="inuse-row"><span class="inuse-key">エリア</span><span class="inuse-val" id="inuse-space-val"></span></div>
+      <div class="inuse-row"><span class="inuse-key">利用者</span><span class="inuse-val" id="inuse-members"></span></div>
+      <div class="inuse-row"><span class="inuse-key">開始時刻</span><span class="inuse-val" id="inuse-start"></span></div>
+      <div class="inuse-row"><span class="inuse-key">終了予定</span><span class="inuse-val" id="inuse-end"></span></div>
+    </div>
+    <div class="hint-box">
+      <div class="hint-title">ご利用案内</div>
+      チェックイン後はテーブルのお菓子をご自由にどうぞ 🍬<br>
+      延長は「＋15分 延長」ボタンで15分ずつ追加できます。<br>
+      終了後は必ず「チェックアウト」を押してください。<br>
+      時間になると自動でチェックアウトされます。
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="screen-admin">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="flame-icon" style="font-size:26px">⚙️</span>
+      <div class="logo-area-name" id="admin-area-name" style="font-size:28px">篝</div>
+      <div class="logo-area-reading" id="admin-area-reading">Kagari</div>
+    </div>
+    <div style="flex:1;margin-top:16px">
+      <div class="section-label">このiPadの記録</div>
+      <div class="log-count">合計 <span id="log-total">0</span> 件のログ</div>
+      <div style="font-size:12px;color:var(--text-sub);line-height:1.8">
+        CSV出力してSharePointの<br>Excelに貼り付けてください。
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="reset-area-btn" onclick="resetArea()">🔄 エリア設定を変更する</button>
+      <button class="back-btn" onclick="goScreen('screen-top')" style="justify-content:center;width:100%;margin-bottom:0">← 戻る</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="admin-layout">
+      <div>
+        <div class="admin-section">
+          <div class="admin-section-title">👥 従業員リスト（全エリア共通）</div>
+          <div class="admin-input-row">
+            <input class="admin-input" id="new-member-input" placeholder="名前（例：山田 太郎）">
+            <input class="admin-input" id="new-member-reading" placeholder="よみがな（例：やまだ たろう）">
+            <button class="btn-icon" onclick="addMember()">追加</button>
+          </div>
+          <button class="reset-area-btn" onclick="resetMembers()" style="margin-bottom:8px">🔄 従業員リストを初期化（最新データに更新）</button>
+          <div class="member-list" id="admin-member-list"></div>
+        </div>
+      </div>
+      <div>
+        <div class="admin-section">
+          <div class="admin-section-title" id="log-section-title">📋 利用ログ</div>
+          <div class="log-actions">
+            <button class="btn-icon" onclick="exportCSV()" style="flex:1">📥 CSV出力</button>
+            <button class="btn-icon" onclick="clearLog()" style="background:var(--red)">クリア</button>
+          </div>
+          <div class="log-wrap">
+            <table>
+              <thead><tr><th>日付</th><th>利用者</th><th>開始</th><th>終了</th><th>時間</th></tr></thead>
+              <tbody id="log-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STORAGE（localStorage → cookie fallback） =====
+function storageSet(key, val) {
+  try { localStorage.setItem(key, val); } catch(e) {}
+  // ログはサイズが大きいのでCookieには保存しない
+  if (key === 'su_logs') return;
+  const d = new Date(); d.setTime(d.getTime() + 365*24*60*60*1000);
+  try {
+    document.cookie = encodeURIComponent(key) + '=' + encodeURIComponent(val) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+  } catch(e) {}
+}
+function storageGet(key) {
+  try { const v = localStorage.getItem(key); if (v !== null) return v; } catch(e) {}
+  if (key === 'su_logs') return '[]';
+  const name = encodeURIComponent(key) + '=';
+  for (let c of document.cookie.split(';')) {
+    c = c.trim();
+    if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length));
+  }
+  return null;
+}
+function storageRemove(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+  document.cookie = encodeURIComponent(key) + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
+}
+
+const SPACE_INFO = {
+  kagari:   {name:'篝',reading:'Kagari',   loc:'入口付近'},
+  tomoshibi:{name:'燈',reading:'Tomoshibi',loc:'ブレイクスペース付近'},
+};
+
+const DEFAULT_MEMBERS = [
+  {name:"相 空知",          reading:"あい そらち",          email:"sorachi.ai"},
+  {name:"青山 貴海",        reading:"あおやま たかみ",      email:"aoyama"},
+  {name:"浅井 元",          reading:"あさい げん",          email:"gen.asai"},
+  {name:"浅沼 麻衣",        reading:"あさぬま まい",        email:"mai.asanuma"},
+  {name:"飯塚 直樹",        reading:"いいづか なおき",      email:"naoki.iizuka"},
+  {name:"五十嵐 恵",        reading:"いがらし めぐみ",      email:"megumi.igarashi"},
+  {name:"井口 龍",          reading:"いぐち りゅう",        email:"ryu.iguchi"},
+  {name:"石川 遥也",        reading:"いしかわ はるや",      email:"haruya.ishikawa"},
+  {name:"伊藤 飛鳥",        reading:"いとう あすか",        email:"asuka.ito"},
+  {name:"入江 日和子",      reading:"いりえ ひなこ",        email:"h.irie"},
+  {name:"上野 弘道",        reading:"うえの ひろみち",      email:"hiromichi.ueno"},
+  {name:"上原 涼慈",        reading:"うえはら りょうじ",    email:"ryoji.uehara"},
+  {name:"江並 友紀",        reading:"えなみ ゆき",          email:"support"},
+  {name:"大島 由華",        reading:"おおしま ゆか",        email:"yuka.oshima"},
+  {name:"片岡 健太郎",      reading:"かたおか けんたろう",  email:"kentaro.kataoka"},
+  {name:"木下 秀治",        reading:"きのした ひではる",    email:"kinoshita"},
+  {name:"楠 由香莉",        reading:"くすのき ゆかり",      email:"yukari.kusunoki"},
+  {name:"許斐 夕紀恵",      reading:"このみ ゆきえ",        email:"yukie.konomi"},
+  {name:"小林 雄志",        reading:"こばやし ゆうじ",      email:"yuji.kobayashi"},
+  {name:"坂爪 純子",        reading:"さかづめ よしこ",      email:"yoshiko.sakazume"},
+  {name:"佐々木 秀征",      reading:"ささき ひでゆき",      email:"hideyuki.sasaki"},
+  {name:"笹野 ひより",      reading:"ささの ひより",        email:"hiyori.sasano"},
+  {name:"Pandey Shreyansh", reading:"しゅれい",             email:"shreyansh.pandey"},
+  {name:"杉山 守",          reading:"すぎやま まもる",      email:"m.sugiyama"},
+  {name:"関口 愛海",        reading:"せきぐち まなみ",      email:"manami.sekiguchi"},
+  {name:"戴 世高",          reading:"たい せいこう",        email:"s.tai"},
+  {name:"高原 朔美",        reading:"たかはら さくみ",      email:"sakumi.takahara"},
+  {name:"谷口 麻子",        reading:"たにぐち あさこ",      email:"asako.taniguchi"},
+  {name:"張 泰瑋",          reading:"ちょう たいい",        email:"taii.chou"},
+  {name:"陳 巍",            reading:"ちん ぎ",              email:"wei.chen"},
+  {name:"中野 諒",          reading:"なかの りょう",        email:"ryo.nakano"},
+  {name:"長沼 斉寿",        reading:"ながぬま よしひさ",    email:""},
+  {name:"那須 瑶香",        reading:"なす ようか",          email:"y.nasu"},
+  {name:"野田 万琴",        reading:"のだ まこと",          email:"makoto.noda"},
+  {name:"波多野 彩杜",      reading:"はたの さいと",        email:"saito.hatano"},
+  {name:"羽山 香澄",        reading:"はやま かすみ",        email:"kasumi.hayama"},
+  {name:"福本 琴子",        reading:"ふくもと ことこ",      email:"kotoko.fukumoto"},
+  {name:"古野 佑気",        reading:"ふるの ゆうき",        email:"yuki.furuno"},
+  {name:"星野 直子",        reading:"ほしの なおこ",        email:"naoko.hoshino"},
+  {name:"増川 孔明",        reading:"ますかわ こうめい",    email:"komei.masukawa15"},
+  {name:"松林 尚史",        reading:"まつばやし なおふみ",  email:"naofumi.matsubayashi"},
+  {name:"松本 理恵",        reading:"まつもと りえ",        email:"rie.matsumoto"},
+  {name:"三浦 耕生",        reading:"みうら こうき",        email:"koki.miura"},
+  {name:"三浦 隆之",        reading:"みうら たかゆき",      email:"takayuki.miura"},
+  {name:"向井 大倭",        reading:"むかい やまと",        email:"yamato.mukai"},
+  {name:"横山 隆太郎",      reading:"よこやま りゅうたろう",email:"ryutaro.yokoyama"},
+  {name:"吉原 清楓",        reading:"よしはら さやか",      email:"s.yoshihara"},
+];
+
+let state = {
+  areaKey:  storageGet('su_area') || null,
+  members:  null,
+  logs:     JSON.parse(storageGet('su_logs') || '[]'),
+  session:  JSON.parse(storageGet('su_session') || 'null'),
+  selectedMembers: [],
+  selectedMinutes: null,
+};
+
+// メンバーデータのマイグレーション（古い文字列形式 → 新しいオブジェクト形式）
+const savedMembers = JSON.parse(storageGet('su_members') || 'null');
+if (!savedMembers) {
+  // 初回：DEFAULTをそのまま使う
+  state.members = DEFAULT_MEMBERS.map(m => ({...m}));
+} else if (savedMembers.length > 0 && typeof savedMembers[0] === 'string') {
+  // 古い文字列形式の場合：DEFAULT_MEMBERSのデータで補完
+  state.members = savedMembers.map(name => {
+    const found = DEFAULT_MEMBERS.find(m => m.name === name);
+    return found ? {...found} : {name, reading: '', email: ''};
+  });
+  storageSet('su_members', JSON.stringify(state.members));
+} else {
+  state.members = savedMembers;
+}
+let timerInterval = null;
+
+function save() {
+  storageSet('su_area',    state.areaKey || '');
+  storageSet('su_members', JSON.stringify(state.members));
+  storageSet('su_logs',    JSON.stringify(state.logs));
+  storageSet('su_session', JSON.stringify(state.session));
+}
+
+function hardReset() {
+  if (!confirm('全データをリセットします。ログも消えます。よいですか？')) return;
+  try { localStorage.clear(); } catch(e) {}
+  // 全Cookieを削除
+  document.cookie.split(';').forEach(c => {
+    document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
+  });
+  location.reload();
+}
+
+// ===== SETUP =====
+function setupArea(key) {
+  state.areaKey = key;
+  save();
+  initArea();
+}
+function resetArea() {
+  if (!confirm('エリア設定をリセットしますか？')) return;
+  state.areaKey = null; storageRemove('su_area'); goScreen('screen-setup');
+}
+function initArea() {
+  try {
+    const key = state.areaKey;
+    if (!key) { goScreen('screen-setup'); return; }
+    const info = SPACE_INFO[key];
+    ['top','mem','time','inuse','admin'].forEach(p => {
+      const n = document.getElementById(p+'-area-name');
+      const r = document.getElementById(p+'-area-reading');
+      if (n) n.textContent = info.name;
+      if (r) r.textContent = info.reading;
+    });
+    document.getElementById('top-area-loc').textContent = info.loc;
+    document.getElementById('log-section-title').textContent = `📋 利用ログ（${info.name}）`;
+    const s = state.session;
+    if (s && s.active) {
+      if (new Date(s.endTime) <= new Date()) autoCheckout();
+      else { showInuse(); return; }
+    }
+    goScreen('screen-top');
+  } catch(e) {
+    // データが壊れている場合はリセット
+    storageRemove('su_session');
+    storageRemove('su_members');
+    state.session = null;
+    state.members = DEFAULT_MEMBERS.map(m => ({...m}));
+    save();
+    goScreen('screen-top');
+  }
+}
+
+// ===== NAV =====
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goAdmin() {
+  renderAdminMembers(); renderLog(); goScreen('screen-admin');
+}
+
+// ===== CHECKIN FLOW =====
+function startCheckin() {
+  state.selectedMembers = []; state.selectedMinutes = null;
+  document.getElementById('member-search').value = '';
+  renderMemberGrid(); goScreen('screen-members');
+}
+function renderMemberGrid() {
+  const q = document.getElementById('member-search').value.toLowerCase();
+  const filtered = state.members.filter(m => {
+    const name = (typeof m === 'string') ? m : m.name;
+    const reading = (typeof m === 'string') ? '' : (m.reading || '');
+    const email = (typeof m === 'string') ? '' : (m.email || '');
+    return name.toLowerCase().includes(q) || reading.includes(q) || email.toLowerCase().includes(q);
+  });
+  document.getElementById('member-grid').innerHTML = filtered.map(m => {
+    const name = (typeof m === 'string') ? m : m.name;
+    const sel = state.selectedMembers.includes(name);
+    return `<div class="member-chip${sel?' selected':''}" onclick="toggleMember('${name}')">
+      <div class="m-avatar">${name.replace(/\s+/g,'').slice(0,2)}</div>
+      <div class="m-name">${name}</div></div>`;
+  }).join('');
+  const cnt = state.selectedMembers.length;
+  document.getElementById('sel-count').textContent = cnt;
+  document.getElementById('sel-tags').innerHTML = state.selectedMembers.map(m=>`<span class="sel-tag">${m}</span>`).join('');
+  document.getElementById('btn-next-time').disabled = cnt < 2;
+}
+function filterMembers() { renderMemberGrid(); }
+function toggleMember(name) {
+  const idx = state.selectedMembers.indexOf(name);
+  if (idx===-1) state.selectedMembers.push(name); else state.selectedMembers.splice(idx,1);
+  renderMemberGrid();
+}
+function goToTime() {
+  if (state.selectedMembers.length < 2) return;
+  state.selectedMinutes = null;
+  document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected'));
+  const info = SPACE_INFO[state.areaKey];
+  document.getElementById('confirm-card').innerHTML = `<b>エリア：</b>${info.name}<br><b>利用者：</b>${state.selectedMembers.join('、')}<br><b>時間：</b><span id="confirm-time-val">未選択</span>`;
+  document.getElementById('btn-checkin').disabled = true;
+  goScreen('screen-time');
+}
+function selectTime(min) {
+  state.selectedMinutes = min;
+  document.querySelectorAll('.time-btn').forEach(b=>b.classList.toggle('selected',parseInt(b.querySelector('.t-min').textContent)===min));
+  const el = document.getElementById('confirm-time-val'); if(el) el.textContent=min+'分';
+  document.getElementById('btn-checkin').disabled = false;
+}
+// ===== SOUND =====
+function playSound(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (type === 'checkin') {
+      // マッチをつける音：短いシュッ→パチッ
+      // ① こすり音（ノイズ）
+      const bufSize = ctx.sampleRate * 0.12;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.value = 3000;
+      noiseFilter.Q.value = 0.8;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.0, ctx.currentTime);
+      noiseGain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.04);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(ctx.destination);
+      noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.12);
+
+      // ② パチッ（点火音）
+      const clickBuf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+      const clickData = clickBuf.getChannelData(0);
+      for (let i = 0; i < clickData.length; i++) clickData[i] = (Math.random() * 2 - 1) * Math.exp(-i / 200);
+      const click = ctx.createBufferSource();
+      click.buffer = clickBuf;
+      const clickGain = ctx.createGain();
+      clickGain.gain.setValueAtTime(1.2, ctx.currentTime + 0.1);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      click.connect(clickGain); clickGain.connect(ctx.destination);
+      click.start(ctx.currentTime + 0.1); click.stop(ctx.currentTime + 0.2);
+
+      // ③ 点火後の小さな炎音
+      const flameBufSize = ctx.sampleRate * 0.4;
+      const flameBuf = ctx.createBuffer(1, flameBufSize, ctx.sampleRate);
+      const flameData = flameBuf.getChannelData(0);
+      for (let i = 0; i < flameBufSize; i++) flameData[i] = (Math.random() * 2 - 1);
+      const flame = ctx.createBufferSource();
+      flame.buffer = flameBuf;
+      const flameFilter = ctx.createBiquadFilter();
+      flameFilter.type = 'lowpass';
+      flameFilter.frequency.value = 800;
+      const flameGain = ctx.createGain();
+      flameGain.gain.setValueAtTime(0.0, ctx.currentTime + 0.18);
+      flameGain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.25);
+      flameGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+      flame.connect(flameFilter); flameFilter.connect(flameGain); flameGain.connect(ctx.destination);
+      flame.start(ctx.currentTime + 0.18); flame.stop(ctx.currentTime + 0.6);
+
+    } else if (type === 'checkout') {
+      // 炎が燃える音：ゆらゆら揺れるノイズ
+      const duration = 1.8;
+      const bufSize = ctx.sampleRate * duration;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
+
+      const source = ctx.createBufferSource();
+      source.buffer = buf;
+
+      // 低周波フィルター（炎のこもった音）
+      const lowFilter = ctx.createBiquadFilter();
+      lowFilter.type = 'lowpass';
+      lowFilter.frequency.value = 600;
+      lowFilter.Q.value = 1.2;
+
+      // ゆらぎLFO
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 6; // 6Hzでゆらぐ
+      lfoGain.gain.value = 200;
+      lfo.connect(lfoGain);
+      lfoGain.connect(lowFilter.frequency);
+
+      // メインゲイン（フェードイン→フェードアウト）
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.5, ctx.currentTime + 1.0);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+      source.connect(lowFilter); lowFilter.connect(gain); gain.connect(ctx.destination);
+      lfo.start(ctx.currentTime); lfo.stop(ctx.currentTime + duration);
+      source.start(ctx.currentTime); source.stop(ctx.currentTime + duration);
+    }
+  } catch(e) {}
+}
+
+function doCheckin() {
+  const now = new Date(), end = new Date(now.getTime()+state.selectedMinutes*60000);
+  state.session = {active:true,areaKey:state.areaKey,spaceName:SPACE_INFO[state.areaKey].name,members:[...state.selectedMembers],startTime:now.toISOString(),endTime:end.toISOString()};
+  save(); playSound('checkin'); showInuse(); showToast('チェックインしました 🔥');
+}
+
+// ===== INUSE =====
+function showInuse() {
+  const s = state.session;
+  document.getElementById('inuse-space-val').textContent = s.spaceName+'（'+SPACE_INFO[s.areaKey].loc+'）';
+  document.getElementById('inuse-members').textContent = s.members.join('、');
+  document.getElementById('inuse-start').textContent = formatTime(new Date(s.startTime));
+  document.getElementById('inuse-end').textContent = formatTime(new Date(s.endTime));
+  goScreen('screen-inuse'); startTimer();
+}
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    const s=state.session; if(!s||!s.active){clearInterval(timerInterval);return;}
+    const now=new Date(),end=new Date(s.endTime),remaining=Math.max(0,end-now),total=end-new Date(s.startTime);
+    document.getElementById('timer-remaining').textContent=`${String(Math.floor(remaining/60000)).padStart(2,'0')}:${String(Math.floor((remaining%60000)/1000)).padStart(2,'0')}`;
+    document.getElementById('timer-ring-fg').style.strokeDashoffset=571.8*(1-remaining/total);
+    if(remaining===0){clearInterval(timerInterval);autoCheckout();}
+  },1000);
+}
+function doExtend() {
+  const newEnd=new Date(new Date(state.session.endTime).getTime()+15*60000);
+  state.session.endTime=newEnd.toISOString();
+  document.getElementById('inuse-end').textContent=formatTime(newEnd);
+  save(); showToast('15分延長しました');
+}
+function doCheckout() { recordLog(false); playSound('checkout'); clearInterval(timerInterval); goScreen('screen-top'); showToast('チェックアウトしました'); }
+function autoCheckout() { recordLog(true); showToast('時間になりました。自動チェックアウトしました。'); setTimeout(()=>goScreen('screen-top'),2000); }
+function recordLog(auto) {
+  const s=state.session; if(!s) return;
+  const now=new Date(), diffMin=Math.round((now-new Date(s.startTime))/60000);
+  state.logs.unshift({date:formatDate(new Date(s.startTime)),area:s.spaceName,members:s.members.join('、'),start:formatTime(new Date(s.startTime)),end:formatTime(now),duration:diffMin+'分',auto});
+  state.session=null; save();
+}
+
+// ===== ADMIN =====
+function resetMembers() {
+  if (!confirm('従業員リストを最新データにリセットします。手動追加したメンバーは削除されます。よいですか？')) return;
+  state.members = DEFAULT_MEMBERS.map(m => ({...m}));
+  save(); renderAdminMembers();
+  showToast('従業員リストを初期化しました');
+}
+  document.getElementById('admin-member-list').innerHTML = state.members.map(m=>{
+    const name = (typeof m === 'string') ? m : m.name;
+    const reading = (typeof m === 'string') ? '' : (m.reading || '');
+    return `<div class="member-list-tag">${name}${reading?`<span style="font-size:10px;color:var(--text-muted);margin-left:3px">（${reading}）</span>`:''}<button class="del-btn" onclick="removeMember('${name}')">×</button></div>`;
+  }).join('');
+}
+function addMember() {
+  const input=document.getElementById('new-member-input'),name=input.value.trim();
+  const readingInput=document.getElementById('new-member-reading');
+  const reading=readingInput ? readingInput.value.trim() : '';
+  if(!name||state.members.find(m=>(typeof m==='string'?m:m.name)===name)) return;
+  state.members.push({name, reading}); input.value='';
+  if(readingInput) readingInput.value='';
+  save(); renderAdminMembers(); showToast(name+' を追加しました');
+}
+function removeMember(name) {
+  if(!confirm(name+' を削除しますか？')) return;
+  state.members=state.members.filter(m=>(typeof m==='string'?m:m.name)!==name);
+  save(); renderAdminMembers();
+}
+function renderLog() {
+  document.getElementById('log-total').textContent = state.logs.length;
+  document.getElementById('log-tbody').innerHTML = state.logs.length===0
+    ? '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px">記録がありません</td></tr>'
+    : state.logs.map(l=>`<tr><td>${l.date}</td><td>${l.members}</td><td>${l.start}</td><td>${l.end}${l.auto?'<span style="font-size:10px;color:var(--text-muted)"> 自動</span>':''}</td><td>${l.duration}</td></tr>`).join('');
+}
+function exportCSV() {
+  if(!state.logs.length){showToast('ログがありません');return;}
+  const info=SPACE_INFO[state.areaKey];
+  const bom='\uFEFF', csv=bom+[['日付','エリア','利用者','開始時刻','終了時刻','利用時間'],
+    ...state.logs.map(l=>[l.date,l.area,l.members,l.start,l.end,l.duration])
+  ].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`${info.name}_利用ログ_${formatDate(new Date()).replace(/\//g,'-')}.csv`;
+  a.click(); showToast('CSVを出力しました');
+}
+function clearLog() {
+  if(!confirm('このiPadの全ログを削除します。よいですか？')) return;
+  state.logs=[]; save(); renderLog(); showToast('ログをクリアしました');
+}
+
+// ===== UTILS =====
+function formatTime(d){return`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function formatDate(d){return`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// INIT - URLパラメータ ?admin=true の場合のみ管理ボタンを表示
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('admin') === 'true') {
+  const btn = document.getElementById('admin-entry-btn');
+  if (btn) btn.style.display = 'block';
+}
+initArea();
+</script>
+</body>
+</html>
