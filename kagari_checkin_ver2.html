@@ -320,7 +320,8 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
         <div class="admin-section">
           <div class="admin-section-title">👥 従業員リスト（全エリア共通）</div>
           <div class="admin-input-row">
-            <input class="admin-input" id="new-member-input" placeholder="名前を入力">
+            <input class="admin-input" id="new-member-input" placeholder="名前（例：山田 太郎）">
+            <input class="admin-input" id="new-member-reading" placeholder="よみがな（例：やまだ たろう）">
             <button class="btn-icon" onclick="addMember()">追加</button>
           </div>
           <div class="member-list" id="admin-member-list"></div>
@@ -373,11 +374,58 @@ const SPACE_INFO = {
   tomoshibi:{name:'燈',reading:'Tomoshibi',loc:'ブレイクスペース付近'},
 };
 
-const DEFAULT_MEMBERS = ["Pandey Shreyansh","三浦 耕生","三浦 隆之","上原 涼慈","上野 弘道","中野 諒","五十嵐 恵","井口 龍","伊藤 飛鳥","佐々木 秀征","入江 日和子","古野 佑気","吉原 清楓","向井 大倭","坂爪 純子","増川 孔明","大島 由華","小林 雄志","張 泰瑋","戴 世高","星野 直子","木下 秀治","杉山 守","松本 理恵","松林 尚史","楠 由香莉","横山 隆太郎","江並 友紀","波多野 彩杜","浅井 元","浅沼 麻衣","片岡 健太郎","相 空知","石川 遥也","福本 琴子","笹野 ひより","羽山 香澄","許斐 夕紀恵","谷口 麻子","那須 瑶香","野田 万琴","関口 愛海","陳 巍","青山 貴海","飯塚 直樹","高原 朔美"];
+const DEFAULT_MEMBERS = [
+  {name:"相 空知",        reading:"あい そらち",          email:"sorachi.ai"},
+  {name:"青山 貴海",      reading:"あおやま たかみ",      email:"aoyama"},
+  {name:"浅沼 麻衣",      reading:"あさぬま まい",        email:"mai.asanuma"},
+  {name:"五十嵐 恵",      reading:"いがらし めぐみ",      email:"megumi.igarashi"},
+  {name:"石川 遥也",      reading:"いしかわ はるや",      email:"haruya.ishikawa"},
+  {name:"入江 日和子",    reading:"いりえ ひなこ",        email:"h.irie"},
+  {name:"江並 友紀",      reading:"えなみ ゆき",          email:"support"},
+  {name:"大島 由華",      reading:"おおしま ゆか",        email:"yuka.oshima"},
+  {name:"片岡 健太郎",    reading:"かたおか けんたろう",  email:"kentaro.kataoka"},
+  {name:"木下 秀治",      reading:"きのした ひではる",    email:"kinoshita"},
+  {name:"楠 由香莉",      reading:"くすのき ゆかり",      email:"yukari.kusunoki"},
+  {name:"許斐 夕紀恵",    reading:"このみ ゆきえ",        email:"yukie.konomi"},
+  {name:"坂爪 純子",      reading:"さかづめ よしこ",      email:"yoshiko.sakazume"},
+  {name:"佐々木 秀征",    reading:"ささき ひでゆき",      email:"hideyuki.sasaki"},
+  {name:"笹野 ひより",    reading:"ささの ひより",        email:"hiyori.sasano"},
+  {name:"Pandey Shreyansh",reading:"しゅれい",            email:"shreyansh.pandey"},
+  {name:"杉山 守",        reading:"すぎやま まもる",      email:"m.sugiyama"},
+  {name:"戴 世高",        reading:"たい せいこう",        email:"s.tai"},
+  {name:"谷口 麻子",      reading:"たにぐち あさこ",      email:"asako.taniguchi"},
+  {name:"中野 諒",        reading:"なかの りょう",        email:"ryo.nakano"},
+  {name:"那須 瑶香",      reading:"なす ようか",          email:"y.nasu"},
+  {name:"福本 琴子",      reading:"ふくもと ことこ",      email:"kotoko.fukumoto"},
+  {name:"古野 佑気",      reading:"ふるの ゆうき",        email:"yuki.furuno"},
+  {name:"星野 直子",      reading:"ほしの なおこ",        email:"naoko.hoshino"},
+  {name:"松林 尚史",      reading:"まつばやし なおふみ",  email:"naofumi.matsubayashi"},
+  {name:"松本 理恵",      reading:"まつもと りえ",        email:"rie.matsumoto"},
+  {name:"三浦 耕生",      reading:"みうら こうき",        email:"koki.miura"},
+  {name:"三浦 隆之",      reading:"みうら たかゆき",      email:"takayuki.miura"},
+  {name:"向井 大倭",      reading:"むかい やまと",        email:"yamato.mukai"},
+  {name:"横山 隆太郎",    reading:"よこやま りゅうたろう",email:"ryutaro.yokoyama"},
+  {name:"吉原 清楓",      reading:"よしはら さやか",      email:"s.yoshihara"},
+  {name:"上原 涼慈",      reading:"",                     email:"ryoji.uehara"},
+  {name:"上野 弘道",      reading:"",                     email:"hiromichi.ueno"},
+  {name:"井口 龍",        reading:"",                     email:"ryu.iguchi"},
+  {name:"伊藤 飛鳥",      reading:"",                     email:"asuka.ito"},
+  {name:"増川 孔明",      reading:"",                     email:"komei.masukawa15"},
+  {name:"小林 雄志",      reading:"",                     email:"yuji.kobayashi"},
+  {name:"張 泰瑋",        reading:"",                     email:"taii.chou"},
+  {name:"波多野 彩杜",    reading:"",                     email:"saito.hatano"},
+  {name:"浅井 元",        reading:"",                     email:"gen.asai"},
+  {name:"羽山 香澄",      reading:"",                     email:"kasumi.hayama"},
+  {name:"野田 万琴",      reading:"",                     email:"makoto.noda"},
+  {name:"関口 愛海",      reading:"",                     email:"manami.sekiguchi"},
+  {name:"陳 巍",          reading:"",                     email:"wei.chen"},
+  {name:"飯塚 直樹",      reading:"",                     email:"naoki.iizuka"},
+  {name:"高原 朔美",      reading:"",                     email:"sakumi.takahara"},
+];
 
 let state = {
   areaKey:  storageGet('su_area') || null,
-  members:  JSON.parse(storageGet('su_members') || 'null') || [...DEFAULT_MEMBERS],
+  members:  JSON.parse(storageGet('su_members') || 'null') || DEFAULT_MEMBERS.map(m=>({...m})),
   logs:     JSON.parse(storageGet('su_logs') || '[]'),
   session:  JSON.parse(storageGet('su_session') || 'null'),
   selectedMembers: [],
@@ -435,12 +483,18 @@ function startCheckin() {
 }
 function renderMemberGrid() {
   const q = document.getElementById('member-search').value.toLowerCase();
-  const filtered = state.members.filter(m => m.toLowerCase().includes(q));
+  const filtered = state.members.filter(m => {
+    const name = (typeof m === 'string') ? m : m.name;
+    const reading = (typeof m === 'string') ? '' : (m.reading || '');
+    const email = (typeof m === 'string') ? '' : (m.email || '');
+    return name.toLowerCase().includes(q) || reading.includes(q) || email.toLowerCase().includes(q);
+  });
   document.getElementById('member-grid').innerHTML = filtered.map(m => {
-    const sel = state.selectedMembers.includes(m);
-    return `<div class="member-chip${sel?' selected':''}" onclick="toggleMember('${m}')">
-      <div class="m-avatar">${m.replace(/\s+/g,'').slice(0,2)}</div>
-      <div class="m-name">${m}</div></div>`;
+    const name = (typeof m === 'string') ? m : m.name;
+    const sel = state.selectedMembers.includes(name);
+    return `<div class="member-chip${sel?' selected':''}" onclick="toggleMember('${name}')">
+      <div class="m-avatar">${name.replace(/\s+/g,'').slice(0,2)}</div>
+      <div class="m-name">${name}</div></div>`;
   }).join('');
   const cnt = state.selectedMembers.length;
   document.getElementById('sel-count').textContent = cnt;
@@ -602,18 +656,25 @@ function recordLog(auto) {
 
 // ===== ADMIN =====
 function renderAdminMembers() {
-  document.getElementById('admin-member-list').innerHTML = state.members.map(m=>
-    `<div class="member-list-tag">${m}<button class="del-btn" onclick="removeMember('${m}')">×</button></div>`
-  ).join('');
+  document.getElementById('admin-member-list').innerHTML = state.members.map(m=>{
+    const name = (typeof m === 'string') ? m : m.name;
+    const reading = (typeof m === 'string') ? '' : (m.reading || '');
+    return `<div class="member-list-tag">${name}${reading?`<span style="font-size:10px;color:var(--text-muted);margin-left:3px">（${reading}）</span>`:''}<button class="del-btn" onclick="removeMember('${name}')">×</button></div>`;
+  }).join('');
 }
 function addMember() {
   const input=document.getElementById('new-member-input'),name=input.value.trim();
-  if(!name||state.members.includes(name)) return;
-  state.members.push(name); input.value=''; save(); renderAdminMembers(); showToast(name+' を追加しました');
+  const readingInput=document.getElementById('new-member-reading');
+  const reading=readingInput ? readingInput.value.trim() : '';
+  if(!name||state.members.find(m=>(typeof m==='string'?m:m.name)===name)) return;
+  state.members.push({name, reading}); input.value='';
+  if(readingInput) readingInput.value='';
+  save(); renderAdminMembers(); showToast(name+' を追加しました');
 }
 function removeMember(name) {
   if(!confirm(name+' を削除しますか？')) return;
-  state.members=state.members.filter(m=>m!==name); save(); renderAdminMembers();
+  state.members=state.members.filter(m=>(typeof m==='string'?m:m.name)!==name);
+  save(); renderAdminMembers();
 }
 function renderLog() {
   document.getElementById('log-total').textContent = state.logs.length;
