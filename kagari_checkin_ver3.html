@@ -432,28 +432,34 @@ const DEFAULT_MEMBERS = [
 ];
 
 let state = {
-  areaKey:  storageGet('su_area') || null,
+  areaKey:  null,
   members:  null,
-  logs:     JSON.parse(storageGet('su_logs') || '[]'),
-  session:  JSON.parse(storageGet('su_session') || 'null'),
+  logs:     [],
+  session:  null,
   selectedMembers: [],
   selectedMinutes: null,
 };
+try { state.areaKey = storageGet('su_area') || null; } catch(e) {}
+try { state.logs = JSON.parse(storageGet('su_logs') || '[]'); } catch(e) { state.logs = []; }
+try { state.session = JSON.parse(storageGet('su_session') || 'null'); } catch(e) { state.session = null; }
 
 // メンバーデータのマイグレーション（古い文字列形式 → 新しいオブジェクト形式）
-const savedMembers = JSON.parse(storageGet('su_members') || 'null');
-if (!savedMembers) {
-  // 初回：DEFAULTをそのまま使う
+try {
+  const savedMembers = JSON.parse(storageGet('su_members') || 'null');
+  if (!savedMembers) {
+    state.members = DEFAULT_MEMBERS.map(m => ({...m}));
+  } else if (savedMembers.length > 0 && typeof savedMembers[0] === 'string') {
+    state.members = savedMembers.map(name => {
+      const found = DEFAULT_MEMBERS.find(m => m.name === name);
+      return found ? {...found} : {name, reading: '', email: ''};
+    });
+    storageSet('su_members', JSON.stringify(state.members));
+  } else {
+    state.members = savedMembers;
+  }
+} catch(e) {
   state.members = DEFAULT_MEMBERS.map(m => ({...m}));
-} else if (savedMembers.length > 0 && typeof savedMembers[0] === 'string') {
-  // 古い文字列形式の場合：DEFAULT_MEMBERSのデータで補完
-  state.members = savedMembers.map(name => {
-    const found = DEFAULT_MEMBERS.find(m => m.name === name);
-    return found ? {...found} : {name, reading: '', email: ''};
-  });
   storageSet('su_members', JSON.stringify(state.members));
-} else {
-  state.members = savedMembers;
 }
 let timerInterval = null;
 
@@ -709,6 +715,7 @@ function resetMembers() {
   save(); renderAdminMembers();
   showToast('従業員リストを初期化しました');
 }
+function renderAdminMembers() {
   document.getElementById('admin-member-list').innerHTML = state.members.map(m=>{
     const name = (typeof m === 'string') ? m : m.name;
     const reading = (typeof m === 'string') ? '' : (m.reading || '');
