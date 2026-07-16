@@ -150,6 +150,7 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
         </div>
       </div>
       <div style="font-size:11px;color:var(--text-muted)">※ 設定後は管理画面から変更できます</div>
+      <button onclick="hardReset()" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;text-decoration:underline">動作がおかしい場合はここをタップ</button>
     </div>
   </div>
 </div>
@@ -353,11 +354,16 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
 // ===== STORAGE（localStorage → cookie fallback） =====
 function storageSet(key, val) {
   try { localStorage.setItem(key, val); } catch(e) {}
+  // ログはサイズが大きいのでCookieには保存しない
+  if (key === 'su_logs') return;
   const d = new Date(); d.setTime(d.getTime() + 365*24*60*60*1000);
-  document.cookie = encodeURIComponent(key) + '=' + encodeURIComponent(val) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+  try {
+    document.cookie = encodeURIComponent(key) + '=' + encodeURIComponent(val) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+  } catch(e) {}
 }
 function storageGet(key) {
   try { const v = localStorage.getItem(key); if (v !== null) return v; } catch(e) {}
+  if (key === 'su_logs') return '[]';
   const name = encodeURIComponent(key) + '=';
   for (let c of document.cookie.split(';')) {
     c = c.trim();
@@ -456,6 +462,16 @@ function save() {
   storageSet('su_members', JSON.stringify(state.members));
   storageSet('su_logs',    JSON.stringify(state.logs));
   storageSet('su_session', JSON.stringify(state.session));
+}
+
+function hardReset() {
+  if (!confirm('全データをリセットします。ログも消えます。よいですか？')) return;
+  try { localStorage.clear(); } catch(e) {}
+  // 全Cookieを削除
+  document.cookie.split(';').forEach(c => {
+    document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
+  });
+  location.reload();
 }
 
 // ===== SETUP =====
