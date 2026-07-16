@@ -10,7 +10,7 @@
 <style>
 :root{--bg:#1C1A17;--surface:#252219;--card:#2E2A22;--border:#3D3829;--accent:#D4813A;--accent2:#E8B86D;--text:#F2EDE4;--text-muted:#8A8070;--text-sub:#B8AA96;--green:#6AAF6A;--red:#E05A5A;--radius:14px;--radius-sm:8px;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{width:100%;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Hiragino Sans','Noto Sans JP',sans-serif;}
+html,body{width:100%;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Hiragino Sans','Noto Sans JP',sans-serif;font-size:140%;}
 .screen{display:none;width:100%;height:100vh;}
 .screen.active{display:flex;}
 .sidebar{width:280px;height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:26px 20px;flex-shrink:0;}
@@ -167,9 +167,9 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
       <div class="hint-box">
         <div class="hint-title">利用の流れ</div>
-        <div>① 利用者を2名以上選択</div>
-        <div>② 利用時間を選択（15分単位）</div>
-        <div>③ チェックイン → お菓子をどうぞ 🍬</div>
+        <div>① 2名以上を選択</div>
+        <div>② 時間を選択（15分単位）</div>
+        <div>③ チェックイン → <span style="white-space:nowrap">お菓子どうぞ 🍬</span></div>
         <div>④ 終了時にチェックアウト</div>
       </div>
     </div>
@@ -434,8 +434,8 @@ function startCheckin() {
   renderMemberGrid(); goScreen('screen-members');
 }
 function renderMemberGrid() {
-  const q = document.getElementById('member-search').value;
-  const filtered = state.members.filter(m => m.includes(q));
+  const q = document.getElementById('member-search').value.toLowerCase();
+  const filtered = state.members.filter(m => m.toLowerCase().includes(q));
   document.getElementById('member-grid').innerHTML = filtered.map(m => {
     const sel = state.selectedMembers.includes(m);
     return `<div class="member-chip${sel?' selected':''}" onclick="toggleMember('${m}')">
@@ -473,27 +473,89 @@ function playSound(type) {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     if (type === 'checkin') {
-      // チェックイン：明るいピン♪（2音）
-      [0, 0.15].forEach((delay, i) => {
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = i === 0 ? 880 : 1100;
-        o.type = 'sine';
-        g.gain.setValueAtTime(0.3, ctx.currentTime + delay);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.3);
-        o.start(ctx.currentTime + delay);
-        o.stop(ctx.currentTime + delay + 0.3);
-      });
+      // マッチをつける音：短いシュッ→パチッ
+      // ① こすり音（ノイズ）
+      const bufSize = ctx.sampleRate * 0.12;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.value = 3000;
+      noiseFilter.Q.value = 0.8;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.0, ctx.currentTime);
+      noiseGain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.04);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(ctx.destination);
+      noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.12);
+
+      // ② パチッ（点火音）
+      const clickBuf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+      const clickData = clickBuf.getChannelData(0);
+      for (let i = 0; i < clickData.length; i++) clickData[i] = (Math.random() * 2 - 1) * Math.exp(-i / 200);
+      const click = ctx.createBufferSource();
+      click.buffer = clickBuf;
+      const clickGain = ctx.createGain();
+      clickGain.gain.setValueAtTime(1.2, ctx.currentTime + 0.1);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      click.connect(clickGain); clickGain.connect(ctx.destination);
+      click.start(ctx.currentTime + 0.1); click.stop(ctx.currentTime + 0.2);
+
+      // ③ 点火後の小さな炎音
+      const flameBufSize = ctx.sampleRate * 0.4;
+      const flameBuf = ctx.createBuffer(1, flameBufSize, ctx.sampleRate);
+      const flameData = flameBuf.getChannelData(0);
+      for (let i = 0; i < flameBufSize; i++) flameData[i] = (Math.random() * 2 - 1);
+      const flame = ctx.createBufferSource();
+      flame.buffer = flameBuf;
+      const flameFilter = ctx.createBiquadFilter();
+      flameFilter.type = 'lowpass';
+      flameFilter.frequency.value = 800;
+      const flameGain = ctx.createGain();
+      flameGain.gain.setValueAtTime(0.0, ctx.currentTime + 0.18);
+      flameGain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.25);
+      flameGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+      flame.connect(flameFilter); flameFilter.connect(flameGain); flameGain.connect(ctx.destination);
+      flame.start(ctx.currentTime + 0.18); flame.stop(ctx.currentTime + 0.6);
+
     } else if (type === 'checkout') {
-      // チェックアウト：落ち着いたピン（1音）
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = 660;
-      o.type = 'sine';
-      g.gain.setValueAtTime(0.25, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-      o.start(ctx.currentTime);
-      o.stop(ctx.currentTime + 0.5);
+      // 炎が燃える音：ゆらゆら揺れるノイズ
+      const duration = 1.8;
+      const bufSize = ctx.sampleRate * duration;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
+
+      const source = ctx.createBufferSource();
+      source.buffer = buf;
+
+      // 低周波フィルター（炎のこもった音）
+      const lowFilter = ctx.createBiquadFilter();
+      lowFilter.type = 'lowpass';
+      lowFilter.frequency.value = 600;
+      lowFilter.Q.value = 1.2;
+
+      // ゆらぎLFO
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 6; // 6Hzでゆらぐ
+      lfoGain.gain.value = 200;
+      lfo.connect(lfoGain);
+      lfoGain.connect(lowFilter.frequency);
+
+      // メインゲイン（フェードイン→フェードアウト）
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.5, ctx.currentTime + 1.0);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+      source.connect(lowFilter); lowFilter.connect(gain); gain.connect(ctx.destination);
+      lfo.start(ctx.currentTime); lfo.stop(ctx.currentTime + duration);
+      source.start(ctx.currentTime); source.stop(ctx.currentTime + duration);
     }
   } catch(e) {}
 }
