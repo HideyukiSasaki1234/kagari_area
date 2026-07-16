@@ -468,10 +468,40 @@ function selectTime(min) {
   const el = document.getElementById('confirm-time-val'); if(el) el.textContent=min+'分';
   document.getElementById('btn-checkin').disabled = false;
 }
+// ===== SOUND =====
+function playSound(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (type === 'checkin') {
+      // チェックイン：明るいピン♪（2音）
+      [0, 0.15].forEach((delay, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = i === 0 ? 880 : 1100;
+        o.type = 'sine';
+        g.gain.setValueAtTime(0.3, ctx.currentTime + delay);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.3);
+        o.start(ctx.currentTime + delay);
+        o.stop(ctx.currentTime + delay + 0.3);
+      });
+    } else if (type === 'checkout') {
+      // チェックアウト：落ち着いたピン（1音）
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 660;
+      o.type = 'sine';
+      g.gain.setValueAtTime(0.25, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(ctx.currentTime);
+      o.stop(ctx.currentTime + 0.5);
+    }
+  } catch(e) {}
+}
+
 function doCheckin() {
   const now = new Date(), end = new Date(now.getTime()+state.selectedMinutes*60000);
   state.session = {active:true,areaKey:state.areaKey,spaceName:SPACE_INFO[state.areaKey].name,members:[...state.selectedMembers],startTime:now.toISOString(),endTime:end.toISOString()};
-  save(); showInuse(); showToast('チェックインしました 🔥');
+  save(); playSound('checkin'); showInuse(); showToast('チェックインしました 🔥');
 }
 
 // ===== INUSE =====
@@ -499,7 +529,7 @@ function doExtend() {
   document.getElementById('inuse-end').textContent=formatTime(newEnd);
   save(); showToast('15分延長しました');
 }
-function doCheckout() { recordLog(false); clearInterval(timerInterval); goScreen('screen-top'); showToast('チェックアウトしました'); }
+function doCheckout() { recordLog(false); playSound('checkout'); clearInterval(timerInterval); goScreen('screen-top'); showToast('チェックアウトしました'); }
 function autoCheckout() { recordLog(true); showToast('時間になりました。自動チェックアウトしました。'); setTimeout(()=>goScreen('screen-top'),2000); }
 function recordLog(auto) {
   const s=state.session; if(!s) return;
