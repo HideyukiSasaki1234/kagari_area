@@ -323,6 +323,7 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
           <div class="admin-input-row">
             <input class="admin-input" id="new-member-input" placeholder="名前（例：山田 太郎）">
             <input class="admin-input" id="new-member-reading" placeholder="よみがな（例：やまだ たろう）">
+            <input class="admin-input" id="new-member-roman" placeholder="ローマ字（例：Yamada Taro）">
             <button class="btn-icon" onclick="addMember()">追加</button>
           </div>
           <button class="reset-area-btn" onclick="resetMembers()" style="margin-bottom:8px">🔄 従業員リストを初期化（最新データに更新）</button>
@@ -382,53 +383,58 @@ const SPACE_INFO = {
 };
 
 const DEFAULT_MEMBERS = [
-  {name:"相 空知",          reading:"あい そらち",          email:"sorachi.ai"},
-  {name:"青山 貴海",        reading:"あおやま たかみ",      email:"aoyama"},
-  {name:"浅井 元",          reading:"あさい げん",          email:"gen.asai"},
-  {name:"浅沼 麻衣",        reading:"あさぬま まい",        email:"mai.asanuma"},
-  {name:"飯塚 直樹",        reading:"いいづか なおき",      email:"naoki.iizuka"},
-  {name:"五十嵐 恵",        reading:"いがらし めぐみ",      email:"megumi.igarashi"},
-  {name:"井口 龍",          reading:"いぐち りゅう",        email:"ryu.iguchi"},
-  {name:"石川 遥也",        reading:"いしかわ はるや",      email:"haruya.ishikawa"},
-  {name:"伊藤 飛鳥",        reading:"いとう あすか",        email:"asuka.ito"},
-  {name:"入江 日和子",      reading:"いりえ ひなこ",        email:"h.irie"},
-  {name:"上野 弘道",        reading:"うえの ひろみち",      email:"hiromichi.ueno"},
-  {name:"上原 涼慈",        reading:"うえはら りょうじ",    email:"ryoji.uehara"},
-  {name:"江並 友紀",        reading:"えなみ ゆき",          email:"support"},
-  {name:"大島 由華",        reading:"おおしま ゆか",        email:"yuka.oshima"},
-  {name:"片岡 健太郎",      reading:"かたおか けんたろう",  email:"kentaro.kataoka"},
-  {name:"木下 秀治",        reading:"きのした ひではる",    email:"kinoshita"},
-  {name:"楠 由香莉",        reading:"くすのき ゆかり",      email:"yukari.kusunoki"},
-  {name:"許斐 夕紀恵",      reading:"このみ ゆきえ",        email:"yukie.konomi"},
-  {name:"小林 雄志",        reading:"こばやし ゆうじ",      email:"yuji.kobayashi"},
-  {name:"坂爪 純子",        reading:"さかづめ よしこ",      email:"yoshiko.sakazume"},
-  {name:"佐々木 秀征",      reading:"ささき ひでゆき",      email:"hideyuki.sasaki"},
-  {name:"笹野 ひより",      reading:"ささの ひより",        email:"hiyori.sasano"},
-  {name:"Pandey Shreyansh", reading:"しゅれい",             email:"shreyansh.pandey"},
-  {name:"杉山 守",          reading:"すぎやま まもる",      email:"m.sugiyama"},
-  {name:"関口 愛海",        reading:"せきぐち まなみ",      email:"manami.sekiguchi"},
-  {name:"戴 世高",          reading:"たい せいこう",        email:"s.tai"},
-  {name:"高原 朔美",        reading:"たかはら さくみ",      email:"sakumi.takahara"},
-  {name:"谷口 麻子",        reading:"たにぐち あさこ",      email:"asako.taniguchi"},
-  {name:"張 泰瑋",          reading:"ちょう たいい",        email:"taii.chou"},
-  {name:"陳 巍",            reading:"ちん ぎ",              email:"wei.chen"},
-  {name:"中野 諒",          reading:"なかの りょう",        email:"ryo.nakano"},
-  {name:"長沼 斉寿",        reading:"ながぬま よしひさ",    email:""},
-  {name:"那須 瑶香",        reading:"なす ようか",          email:"y.nasu"},
-  {name:"野田 万琴",        reading:"のだ まこと",          email:"makoto.noda"},
-  {name:"波多野 彩杜",      reading:"はたの さいと",        email:"saito.hatano"},
-  {name:"羽山 香澄",        reading:"はやま かすみ",        email:"kasumi.hayama"},
-  {name:"福本 琴子",        reading:"ふくもと ことこ",      email:"kotoko.fukumoto"},
-  {name:"古野 佑気",        reading:"ふるの ゆうき",        email:"yuki.furuno"},
-  {name:"星野 直子",        reading:"ほしの なおこ",        email:"naoko.hoshino"},
-  {name:"増川 孔明",        reading:"ますかわ こうめい",    email:"komei.masukawa15"},
-  {name:"松林 尚史",        reading:"まつばやし なおふみ",  email:"naofumi.matsubayashi"},
-  {name:"松本 理恵",        reading:"まつもと りえ",        email:"rie.matsumoto"},
-  {name:"三浦 耕生",        reading:"みうら こうき",        email:"koki.miura"},
-  {name:"三浦 隆之",        reading:"みうら たかゆき",      email:"takayuki.miura"},
-  {name:"向井 大倭",        reading:"むかい やまと",        email:"yamato.mukai"},
-  {name:"横山 隆太郎",      reading:"よこやま りゅうたろう",email:"ryutaro.yokoyama"},
-  {name:"吉原 清楓",        reading:"よしはら さやか",      email:"s.yoshihara"},
+  {name:"相 空知",          reading:"あい そらち",          roman:"Ai Sorachi"},
+  {name:"青山 貴海",        reading:"あおやま たかみ",      roman:"Aoyama Takami"},
+  {name:"浅沼 麻衣",        reading:"あさぬま まい",        roman:"Asanuma Mai"},
+  {name:"五十嵐 恵",        reading:"いがらし めぐみ",      roman:"Igarashi Megumi"},
+  {name:"石川 遥也",        reading:"いしかわ はるや",      roman:"Ishikawa Haruya"},
+  {name:"入江 日和子",      reading:"いりえ ひなこ",        roman:"Irie Hinako"},
+  {name:"江並 友紀",        reading:"えなみ ゆき",          roman:"Enami Yuki"},
+  {name:"大島 由華",        reading:"おおしま ゆか",        roman:"Oshima Yuka"},
+  {name:"片岡 健太郎",      reading:"かたおか けんたろう",  roman:"Kataoka Kentaro"},
+  {name:"木下 秀治",        reading:"きのした ひではる",    roman:"Kinoshita Hideharu"},
+  {name:"楠 由香莉",        reading:"くすのき ゆかり",      roman:"Kusunoki Yukari"},
+  {name:"許斐 夕紀恵",      reading:"このみ ゆきえ",        roman:"Konomi Yukie"},
+  {name:"坂爪 純子",        reading:"さかづめ よしこ",      roman:"Sakazume Yoshiko"},
+  {name:"佐々木 秀征",      reading:"ささき ひでゆき",      roman:"Sasaki Hideyuki"},
+  {name:"笹野 ひより",      reading:"ささの ひより",        roman:"Sasano Hiyori"},
+  {name:"Pandey Shreyansh", reading:"しゅれい",             roman:"Pandey Shreyansh"},
+  {name:"杉山 守",          reading:"すぎやま まもる",      roman:"Sugiyama Mamoru"},
+  {name:"戴 世高",          reading:"たい せいこう",        roman:"Tai Seiko"},
+  {name:"髙原 麻美",        reading:"たかはら まみ",        roman:"Takahara Mami"},
+  {name:"高原 瑞紀",        reading:"たかはら みずき",      roman:"Takahara Mizuki"},
+  {name:"谷口 麻子",        reading:"たにぐち あさこ",      roman:"Taniguchi Asako"},
+  {name:"中野 諒",          reading:"なかの りょう",        roman:"Nakano Ryo"},
+  {name:"那須 瑶香",        reading:"なす ようか",          roman:"Nasu Yoka"},
+  {name:"福本 琴子",        reading:"ふくもと ことこ",      roman:"Fukumoto Kotoko"},
+  {name:"古野 佑気",        reading:"ふるの ゆうき",        roman:"Furuno Yuki"},
+  {name:"星野 直子",        reading:"ほしの なおこ",        roman:"Hoshino Naoko"},
+  {name:"松林 尚史",        reading:"まつばやし なおふみ",  roman:"Matsubayashi Naofumi"},
+  {name:"松本 理恵",        reading:"まつもと りえ",        roman:"Matsumoto Rie"},
+  {name:"三浦 耕生",        reading:"みうら こうき",        roman:"Miura Koki"},
+  {name:"三浦 隆之",        reading:"みうら たかゆき",      roman:"Miura Takayuki"},
+  {name:"向井 大倭",        reading:"むかい やまと",        roman:"Mukai Yamato"},
+  {name:"横山 隆太郎",      reading:"よこやま りゅうたろう",roman:"Yokoyama Ryutaro"},
+  {name:"吉原 清楓",        reading:"よしはら さやか",      roman:"Yoshihara Sayaka"},
+  {name:"伊藤 飛鳥",        reading:"いとう あすか",        roman:"Ito Asuka"},
+  {name:"井口 龍",          reading:"いぐち りゅう",        roman:"Iguchi Ryu"},
+  {name:"羽山 香澄",        reading:"はやま かすみ",        roman:"Hayama Kasumi"},
+  {name:"関口 愛海",        reading:"せきぐち まなみ",      roman:"Sekiguchi Manami"},
+  {name:"高原 朔美",        reading:"たかはら さくみ",      roman:"Takahara Sakumi"},
+  {name:"小林 雄志",        reading:"こばやし ゆうじ",      roman:"Kobayashi Yuji"},
+  {name:"上原 涼慈",        reading:"うえはら りょうじ",    roman:"Uehara Ryoji"},
+  {name:"上野 弘道",        reading:"うえの ひろみち",      roman:"Ueno Hiromichi"},
+  {name:"浅井 元",          reading:"あさい げん",          roman:"Asai Gen"},
+  {name:"増川 孔明",        reading:"ますかわ こうめい",    roman:"Masukawa Komei"},
+  {name:"張 泰瑋",          reading:"ちょう たいい",        roman:"Chou Taii"},
+  {name:"陳 巍",            reading:"ちん ぎ",              roman:"Chen Wei"},
+  {name:"波多野 彩杜",      reading:"はたの さいと",        roman:"Hatano Saito"},
+  {name:"飯塚 直樹",        reading:"いいづか なおき",      roman:"Iizuka Naoki"},
+  {name:"野田 万琴",        reading:"のだ まこと",          roman:"Noda Makoto"},
+  {name:"長沼 斉寿",        reading:"ながぬま よしひさ",    roman:"Naganuma Yoshihisa"},
+  {name:"藤原 弘行",        reading:"ふじわら ひろゆき",    roman:"Fujiwara Hiroyuki"},
+  {name:"近藤 佑奈",        reading:"こんどう ゆうな",      roman:"Kondo Yuna"},
+  {name:"浜口 佳祐",        reading:"はまぐち けいすけ",    roman:"Hamaguchi Keisuke"},
 ];
 
 let state = {
@@ -540,8 +546,8 @@ function renderMemberGrid() {
   const filtered = state.members.filter(m => {
     const name = (typeof m === 'string') ? m : m.name;
     const reading = (typeof m === 'string') ? '' : (m.reading || '');
-    const email = (typeof m === 'string') ? '' : (m.email || '');
-    return name.toLowerCase().includes(q) || reading.includes(q) || email.toLowerCase().includes(q);
+    const roman = (typeof m === 'string') ? '' : (m.roman || m.email || '');
+    return name.toLowerCase().includes(q) || reading.includes(q) || roman.toLowerCase().includes(q);
   });
   document.getElementById('member-grid').innerHTML = filtered.map(m => {
     const name = (typeof m === 'string') ? m : m.name;
@@ -719,16 +725,20 @@ function renderAdminMembers() {
   document.getElementById('admin-member-list').innerHTML = state.members.map(m=>{
     const name = (typeof m === 'string') ? m : m.name;
     const reading = (typeof m === 'string') ? '' : (m.reading || '');
-    return `<div class="member-list-tag">${name}${reading?`<span style="font-size:10px;color:var(--text-muted);margin-left:3px">（${reading}）</span>`:''}<button class="del-btn" onclick="removeMember('${name}')">×</button></div>`;
+    const roman = (typeof m === 'string') ? '' : (m.roman || m.email || '');
+    return `<div class="member-list-tag">${name}${reading?`<span style="font-size:10px;color:var(--text-muted);margin-left:3px">（${reading} / ${roman}）</span>`:''}<button class="del-btn" onclick="removeMember('${name}')">×</button></div>`;
   }).join('');
 }
 function addMember() {
   const input=document.getElementById('new-member-input'),name=input.value.trim();
   const readingInput=document.getElementById('new-member-reading');
+  const romanInput=document.getElementById('new-member-roman');
   const reading=readingInput ? readingInput.value.trim() : '';
+  const roman=romanInput ? romanInput.value.trim() : '';
   if(!name||state.members.find(m=>(typeof m==='string'?m:m.name)===name)) return;
-  state.members.push({name, reading}); input.value='';
+  state.members.push({name, reading, roman}); input.value='';
   if(readingInput) readingInput.value='';
+  if(romanInput) romanInput.value='';
   save(); renderAdminMembers(); showToast(name+' を追加しました');
 }
 function removeMember(name) {
