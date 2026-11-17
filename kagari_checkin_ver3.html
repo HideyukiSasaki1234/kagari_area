@@ -3,131 +3,162 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>着火エリア チェックイン</title>
 <style>
-* { box-sizing: border-box; }
-</style>
-<title>スタンドアップコーナー</title>
-<style>
-:root{--bg:#1C1A17;--surface:#252219;--card:#2E2A22;--border:#3D3829;--accent:#D4813A;--accent2:#E8B86D;--text:#F2EDE4;--text-muted:#8A8070;--text-sub:#B8AA96;--green:#6AAF6A;--red:#E05A5A;--radius:14px;--radius-sm:8px;}
+:root{
+  --bg:#F0F8FF;--surface:#FFFFFF;--card:#FFFFFF;--border:#B8DEFF;
+  --accent:#1A8FD1;--accent2:#42AAEB;--accent-light:#E3F4FF;
+  --text:#0D2B45;--text-muted:#6B9BBC;--text-sub:#2D6080;
+  --green:#22A06B;--red:#E05A5A;
+  --radius:14px;--radius-sm:8px;
+  --shadow:0 2px 12px rgba(26,143,209,.10);
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Hiragino Sans','Noto Sans JP',sans-serif;font-size:140%;}
 .screen{display:none;width:100%;height:100vh;}
 .screen.active{display:flex;}
-.sidebar{width:280px;height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:26px 20px;flex-shrink:0;}
-.sidebar-logo{text-align:center;margin-bottom:22px;}
-.flame-icon{font-size:36px;animation:flicker 2s ease-in-out infinite;display:block;margin-bottom:6px;}
+
+/* SIDEBAR */
+.sidebar{width:260px;height:100vh;background:var(--accent);display:flex;flex-direction:column;padding:24px 18px;flex-shrink:0;}
+.sidebar-logo{text-align:center;margin-bottom:20px;}
+.flame-icon{font-size:34px;animation:flicker 2s ease-in-out infinite;display:block;margin-bottom:4px;}
 @keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(1.06)}}
-.logo-area-name{font-size:38px;font-weight:900;color:var(--accent2);letter-spacing:.15em;line-height:1;}
-.logo-area-reading{font-size:13px;color:var(--text-muted);margin-top:4px;letter-spacing:.1em;}
-.logo-area-loc{font-size:12px;color:var(--text-sub);margin-top:6px;}
-.status-badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-top:8px;}
-.status-available{background:rgba(106,175,106,.15);color:var(--green);}
-.status-inuse{background:rgba(212,129,58,.2);color:var(--accent);}
-.sidebar-footer{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
-.admin-btn{width:100%;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);font-size:12px;padding:9px;cursor:pointer;}
-.admin-btn:hover{border-color:var(--accent);color:var(--text);}
-.main{flex:1;height:100vh;overflow-y:auto;padding:26px 30px;display:flex;flex-direction:column;}
+.logo-area-name{font-size:36px;font-weight:900;color:#fff;letter-spacing:.15em;line-height:1;}
+.logo-area-reading{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px;letter-spacing:.1em;}
+.logo-area-loc{font-size:11px;color:rgba(255,255,255,.6);margin-top:5px;}
+.status-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:7px;}
+.status-available{background:rgba(255,255,255,.2);color:#fff;}
+.status-inuse{background:rgba(255,255,255,.3);color:#fff;}
+.sidebar-footer{margin-top:auto;display:flex;flex-direction:column;gap:7px;}
+.admin-btn{width:100%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);color:#fff;font-size:11px;padding:8px;cursor:pointer;}
+
+/* MAIN */
+.main{flex:1;height:100vh;overflow-y:auto;padding:22px 26px;display:flex;flex-direction:column;}
 .main::-webkit-scrollbar{width:3px;}
 .main::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.setup-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
-.setup-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:540px;}
-.setup-card{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;}
-.setup-card:active{transform:scale(.96);}
-.setup-card:hover{border-color:var(--accent);}
-.setup-card .sc-kanji{font-size:50px;font-weight:900;color:var(--accent2);letter-spacing:.1em;}
-.setup-card .sc-reading{font-size:14px;color:var(--text-muted);margin-top:6px;letter-spacing:.1em;}
-.setup-card .sc-loc{font-size:12px;color:var(--text-sub);margin-top:8px;}
-.section-label{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
-.steps{display:flex;gap:6px;align-items:center;margin-bottom:22px;}
-.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
+
+/* SETUP */
+.setup-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;}
+.setup-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:520px;}
+.setup-card{background:var(--surface);border:2px solid var(--border);border-radius:20px;padding:28px 18px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow);}
+.setup-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.setup-card:active{transform:scale(.97);}
+.setup-card .sc-kanji{font-size:48px;font-weight:900;color:var(--accent);letter-spacing:.1em;}
+.setup-card .sc-reading{font-size:13px;color:var(--text-muted);margin-top:5px;}
+.setup-card .sc-loc{font-size:11px;color:var(--text-sub);margin-top:7px;}
+
+/* SECTION LABEL */
+.section-label{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+
+/* STEPS */
+.steps{display:flex;gap:5px;align-items:center;margin-bottom:18px;}
+.step-dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
 .step-dot.done{background:var(--accent);}
-.step-dot.active{background:var(--accent2);width:28px;border-radius:4px;}
-.step-label{font-size:12px;color:var(--text-muted);margin-left:8px;}
-.member-search{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;padding:10px 14px;margin-bottom:10px;outline:none;}
+.step-dot.active{background:var(--accent2);width:24px;border-radius:4px;}
+.step-label{font-size:11px;color:var(--text-muted);margin-left:7px;}
+
+/* GROUP TABS */
+.group-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.group-tab{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:4px 11px;font-size:11px;color:var(--text-muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.group-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+
+/* MEMBER SEARCH */
+.member-search{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;padding:9px 12px;margin-bottom:10px;outline:none;box-shadow:var(--shadow);}
 .member-search:focus{border-color:var(--accent);}
-.member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px;margin-bottom:12px;flex:1;overflow-y:auto;}
-.member-chip{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 3px;text-align:center;cursor:pointer;transition:all .15s;}
+
+/* MEMBER GRID */
+.member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px;flex:1;overflow-y:auto;}
+.member-chip{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 4px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(26,143,209,.06);}
 .member-chip:active{transform:scale(.95);}
-.member-chip.selected{border-color:var(--accent);background:#2E2515;}
-.m-avatar{width:34px;height:34px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent2);margin:0 auto 4px;}
+.member-chip.selected{border-color:var(--accent);background:var(--accent-light);}
+.m-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);margin:0 auto 4px;}
 .member-chip.selected .m-avatar{background:var(--accent);color:#fff;}
 .m-name{font-size:10px;color:var(--text-sub);line-height:1.3;}
-.member-chip.selected .m-name{color:var(--text);}
-.time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
-.time-btn{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 6px;text-align:center;cursor:pointer;transition:all .15s;}
+.member-chip.selected .m-name{color:var(--accent);font-weight:600;}
+.m-group{font-size:9px;color:var(--text-muted);margin-top:1px;}
+
+/* SEL PREVIEW */
+.sel-preview{flex:1;overflow:hidden;}
+.sel-count-text{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:7px;}
+.sel-count-text span{color:#fff;font-weight:700;}
+.sel-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.sel-tag{background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:3px 7px;border-radius:11px;}
+
+/* CONFIRM */
+.confirm-card{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:13px 15px;font-size:12px;color:#fff;line-height:2;}
+.confirm-card b{color:#fff;}
+
+/* TIME */
+.time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px;}
+.time-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 6px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:var(--shadow);}
 .time-btn:active{transform:scale(.96);}
-.time-btn.selected{border-color:var(--accent);background:#2E2515;}
-.t-min{font-size:26px;font-weight:800;color:var(--accent2);}
-.t-label{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.time-btn.selected{border-color:var(--accent);background:var(--accent-light);}
+.t-min{font-size:24px;font-weight:800;color:var(--accent);}
+.t-label{font-size:10px;color:var(--text-muted);margin-top:2px;}
 .time-btn.selected .t-min{color:var(--accent);}
-@media(max-width:900px){
-  .sidebar{width:200px;padding:16px 12px;}
-  .logo-area-name{font-size:26px;}
-  .logo-area-reading{font-size:11px;}
-  .logo-area-loc{font-size:11px;}
-  .flame-icon{font-size:28px;margin-bottom:4px;}
-  .sidebar-logo{margin-bottom:14px;}
-  .admin-layout{grid-template-columns:1fr;}
-  .main{padding:16px 18px;}
-  .hint-box{font-size:11px;line-height:1.7;padding:10px 12px;}
-  .hint-box .hint-title{margin-bottom:5px;}
-  .btn{padding:10px 14px;font-size:14px;}
-  .status-badge{font-size:11px;padding:3px 9px;}
-}
-.btn{padding:12px 18px;border-radius:var(--radius);font-size:15px;font-weight:700;border:none;cursor:pointer;letter-spacing:.04em;transition:all .15s;}
+
+/* BUTTONS */
+.btn{padding:11px 16px;border-radius:var(--radius);font-size:14px;font-weight:700;border:none;cursor:pointer;letter-spacing:.03em;transition:all .15s;}
 .btn:active{transform:scale(.98);}
-.btn-primary{background:var(--accent);color:#fff;}
-.btn-primary:disabled{background:var(--border);color:var(--text-muted);cursor:not-allowed;}
-.btn-secondary{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+.btn-primary{background:#fff;color:var(--accent);box-shadow:0 2px 8px rgba(26,143,209,.2);}
+.btn-primary:disabled{background:rgba(255,255,255,.3);color:rgba(255,255,255,.5);cursor:not-allowed;box-shadow:none;}
+.btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);}
 .btn-danger{background:var(--red);color:#fff;}
 .btn-full{width:100%;}
-.back-btn{background:none;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;margin-bottom:16px;}
-.sel-preview{flex:1;overflow:hidden;}
-.sel-count-text{font-size:13px;color:var(--text-sub);margin-bottom:7px;}
-.sel-count-text span{color:var(--accent2);font-weight:700;}
-.sel-tags{display:flex;flex-wrap:wrap;gap:4px;}
-.sel-tag{background:var(--accent);color:#fff;font-size:11px;padding:3px 7px;border-radius:11px;}
-.confirm-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--text-sub);line-height:2;}
-.confirm-card b{color:var(--text);}
+.back-btn{background:none;border:none;color:rgba(255,255,255,.7);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;margin-bottom:14px;}
+
+/* TIMER */
 .timer-col{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;}
-.timer-ring{width:210px;height:210px;position:relative;margin-bottom:10px;}
+.timer-ring{width:200px;height:200px;position:relative;margin-bottom:10px;}
 .timer-ring svg{transform:rotate(-90deg);}
-.ring-bg{fill:none;stroke:var(--border);stroke-width:10;}
-.ring-fg{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s;}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.2);stroke-width:10;}
+.ring-fg{fill:none;stroke:#fff;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s;}
 .timer-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
-.timer-remaining{font-size:40px;font-weight:900;color:var(--accent2);line-height:1;}
-.timer-lbl{font-size:11px;color:var(--text-muted);margin-top:4px;}
-.inuse-info{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;margin-bottom:14px;}
-.inuse-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.timer-remaining{font-size:38px;font-weight:900;color:#fff;line-height:1;}
+.timer-lbl{font-size:10px;color:rgba(255,255,255,.7);margin-top:3px;}
+
+/* INUSE */
+.inuse-info{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 15px;margin-bottom:12px;box-shadow:var(--shadow);}
+.inuse-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
 .inuse-row:last-child{border-bottom:none;}
-.inuse-key{color:var(--text-muted);flex-shrink:0;margin-right:10px;}
+.inuse-key{color:var(--text-muted);}
 .inuse-val{color:var(--text);font-weight:500;text-align:right;}
-.hint-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;font-size:12px;color:var(--text-sub);line-height:1.9;}
-.hint-box .hint-title{font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:7px;letter-spacing:.06em;}
-.admin-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.admin-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
-.admin-section-title{font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:11px;letter-spacing:.06em;}
-.admin-input-row{display:flex;gap:7px;margin-bottom:9px;}
-.admin-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:7px 10px;outline:none;}
+.hint-box{background:var(--accent-light);border:1px solid var(--border);border-radius:var(--radius);padding:12px 15px;font-size:11px;color:var(--text-sub);line-height:1.8;}
+.hint-box .hint-title{font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:6px;letter-spacing:.05em;}
+
+/* ADMIN */
+.admin-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.admin-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow);}
+.admin-section-title{font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px;letter-spacing:.05em;}
+.admin-input-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.admin-input{flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:12px;padding:6px 9px;outline:none;}
 .admin-input:focus{border-color:var(--accent);}
-.btn-icon{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:7px 13px;font-size:13px;cursor:pointer;font-weight:700;white-space:nowrap;}
-.member-list{display:flex;flex-wrap:wrap;gap:5px;max-height:150px;overflow-y:auto;margin-top:4px;}
-.member-list-tag{display:flex;align-items:center;gap:5px;background:var(--border);color:var(--text-sub);font-size:12px;padding:4px 8px;border-radius:14px;}
-.del-btn{color:var(--text-muted);cursor:pointer;font-size:13px;background:none;border:none;padding:0;line-height:1;}
+.btn-icon{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;cursor:pointer;font-weight:700;white-space:nowrap;}
+.member-list{display:flex;flex-wrap:wrap;gap:4px;max-height:140px;overflow-y:auto;margin-top:3px;}
+.member-list-tag{display:flex;align-items:center;gap:4px;background:var(--accent-light);color:var(--accent);font-size:11px;padding:3px 8px;border-radius:14px;}
+.del-btn{color:var(--text-muted);cursor:pointer;font-size:12px;background:none;border:none;padding:0;line-height:1;}
 .del-btn:hover{color:var(--red);}
-table{width:100%;border-collapse:collapse;font-size:12px;}
-th{background:var(--surface);color:var(--text-muted);padding:7px;text-align:left;border-bottom:1px solid var(--border);font-weight:600;position:sticky;top:0;}
-td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
-.log-wrap{max-height:220px;overflow-y:auto;}
-.log-wrap::-webkit-scrollbar{width:3px;}
-.log-wrap::-webkit-scrollbar-thumb{background:var(--border);}
-.log-actions{display:flex;gap:6px;margin-bottom:9px;}
-.reset-area-btn{width:100%;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);font-size:12px;padding:7px;cursor:pointer;}
-.reset-area-btn:hover{border-color:var(--accent2);color:var(--accent2);}
-.log-count{font-size:12px;color:var(--text-muted);margin-bottom:8px;}
-.log-count span{color:var(--accent2);font-weight:700;}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;font-weight:600;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+th{background:var(--bg);color:var(--text-muted);padding:6px;text-align:left;border-bottom:1px solid var(--border);font-weight:600;position:sticky;top:0;}
+td{padding:6px;border-bottom:1px solid var(--border);color:var(--text-sub);}
+.log-wrap{max-height:200px;overflow-y:auto;}
+.log-actions{display:flex;gap:5px;margin-bottom:8px;}
+.log-count{font-size:11px;color:rgba(255,255,255,.7);margin-bottom:7px;}
+.log-count span{color:#fff;font-weight:700;}
+.reset-area-btn{width:100%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--radius-sm);color:rgba(255,255,255,.8);font-size:11px;padding:7px;cursor:pointer;margin-bottom:4px;}
+.reset-area-btn:hover{background:rgba(255,255,255,.2);color:#fff;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;font-weight:600;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:var(--shadow);}
 .toast.show{transform:translateX(-50%) translateY(0);}
+
+@media(max-width:900px){
+  .sidebar{width:190px;padding:16px 12px;}
+  .logo-area-name{font-size:26px;}
+  .admin-layout{grid-template-columns:1fr;}
+  .main{padding:14px 14px;}
+  .btn{padding:9px 12px;font-size:13px;}
+}
 </style>
 </head>
 <body>
@@ -137,20 +168,20 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
   <div class="main" style="align-items:center;justify-content:center">
     <div class="setup-center">
       <div style="text-align:center">
-        <div style="font-size:42px;margin-bottom:10px">🔥</div>
-        <div style="font-size:20px;font-weight:800;color:var(--accent2);letter-spacing:.08em;margin-bottom:5px">スタンドアップコーナー</div>
-        <div style="font-size:13px;color:var(--text-muted)">このiPadのエリアを選択してください</div>
+        <div style="font-size:40px;margin-bottom:8px">🔥</div>
+        <div style="font-size:19px;font-weight:800;color:var(--accent);letter-spacing:.06em;margin-bottom:4px">着火エリア</div>
+        <div style="font-size:12px;color:var(--text-muted)">このiPadのエリアを選択してください</div>
       </div>
       <div class="setup-cards">
         <div class="setup-card" onclick="setupArea('kagari')">
-          <div class="sc-kanji">篝</div><div class="sc-reading">Kagari</div><div class="sc-loc">入口付近</div>
+          <div class="sc-kanji">篝</div><div class="sc-reading">Kagari</div><div class="sc-loc">そらまめテーブル</div>
         </div>
         <div class="setup-card" onclick="setupArea('tomoshibi')">
           <div class="sc-kanji">燈</div><div class="sc-reading">Tomoshibi</div><div class="sc-loc">ブレイクスペース付近</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text-muted)">※ 設定後は管理画面から変更できます</div>
-      <button onclick="hardReset()" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;text-decoration:underline">動作がおかしい場合はここをタップ</button>
+      <div style="font-size:10px;color:var(--text-muted)">※ 設定後は管理画面から変更できます</div>
+      <button onclick="hardReset()" style="background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;text-decoration:underline">動作がおかしい場合はここをタップ</button>
     </div>
   </div>
 </div>
@@ -162,12 +193,12 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
       <span class="flame-icon">🔥</span>
       <div class="logo-area-name" id="top-area-name">篝</div>
       <div class="logo-area-reading" id="top-area-reading">Kagari</div>
-      <div class="logo-area-loc" id="top-area-loc">入口付近</div>
+      <div class="logo-area-loc" id="top-area-loc">そらまめテーブル</div>
       <div class="status-badge status-available">● 利用可能</div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
-      <div class="hint-box">
-        <div class="hint-title">利用の流れ</div>
+      <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:13px 15px;font-size:11px;color:#fff;line-height:1.9">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;letter-spacing:.05em">利用の流れ</div>
         <div>① 2名以上を選択</div>
         <div>② 時間を選択（15分単位）</div>
         <div>③ チェックイン → <span style="white-space:nowrap">お菓子どうぞ 🍬</span></div>
@@ -181,8 +212,8 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
   </div>
   <div class="main" style="align-items:center;justify-content:center">
     <div style="text-align:center">
-      <div style="font-size:80px;margin-bottom:16px;opacity:.25">🔥</div>
-      <div style="font-size:15px;color:var(--text-sub);line-height:2.2">このエリアは現在利用可能です。<br>左の「チェックインする」から利用を開始してください。</div>
+      <div style="font-size:72px;margin-bottom:14px;opacity:.12">🔥</div>
+      <div style="font-size:14px;color:var(--text-muted);line-height:2.2">このエリアは現在利用可能です。<br>左の「チェックインする」から利用を開始してください。</div>
     </div>
   </div>
 </div>
@@ -191,12 +222,12 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
 <div class="screen" id="screen-members">
   <div class="sidebar">
     <div class="sidebar-logo">
-      <span class="flame-icon" style="font-size:26px">🔥</span>
-      <div class="logo-area-name" id="mem-area-name" style="font-size:30px">篝</div>
+      <span class="flame-icon" style="font-size:24px">🔥</span>
+      <div class="logo-area-name" id="mem-area-name" style="font-size:28px">篝</div>
       <div class="logo-area-reading" id="mem-area-reading">Kagari</div>
     </div>
     <div class="sel-preview">
-      <div class="section-label">選択中</div>
+      <div class="section-label" style="color:rgba(255,255,255,.6)">選択中</div>
       <div class="sel-count-text"><span id="sel-count">0</span> 名（2名以上必要）</div>
       <div class="sel-tags" id="sel-tags"></div>
     </div>
@@ -210,8 +241,8 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
       <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
       <span class="step-label">利用者を選択（2名以上）</span>
     </div>
-    <div class="section-label">従業員を選択</div>
-    <input class="member-search" id="member-search" placeholder="名前で絞り込む" oninput="filterMembers()">
+    <input class="member-search" id="member-search" placeholder="名前で絞り込む（漢字・ひらがな・ローマ字）" oninput="onSearch()">
+    <div class="group-tabs" id="group-tabs"></div>
     <div class="member-grid" id="member-grid"></div>
   </div>
 </div>
@@ -220,12 +251,12 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
 <div class="screen" id="screen-time">
   <div class="sidebar">
     <div class="sidebar-logo">
-      <span class="flame-icon" style="font-size:26px">⏱️</span>
-      <div class="logo-area-name" id="time-area-name" style="font-size:30px">篝</div>
+      <span class="flame-icon" style="font-size:24px">⏱️</span>
+      <div class="logo-area-name" id="time-area-name" style="font-size:28px">篝</div>
       <div class="logo-area-reading" id="time-area-reading">Kagari</div>
     </div>
     <div style="flex:1">
-      <div class="section-label">確認内容</div>
+      <div class="section-label" style="color:rgba(255,255,255,.6)">確認内容</div>
       <div class="confirm-card" id="confirm-card">－</div>
     </div>
     <div class="sidebar-footer">
@@ -255,17 +286,17 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
 <!-- IN-USE -->
 <div class="screen" id="screen-inuse">
   <div class="sidebar">
-    <div class="sidebar-logo" style="margin-bottom:12px">
+    <div class="sidebar-logo" style="margin-bottom:10px">
       <span class="flame-icon">🔥</span>
-      <div class="logo-area-name" id="inuse-area-name" style="font-size:30px">篝</div>
+      <div class="logo-area-name" id="inuse-area-name" style="font-size:28px">篝</div>
       <div class="logo-area-reading" id="inuse-area-reading">Kagari</div>
-      <div class="status-badge status-inuse" style="margin-top:6px">● 利用中</div>
+      <div class="status-badge status-inuse" style="margin-top:5px">● 利用中</div>
     </div>
     <div class="timer-col">
       <div class="timer-ring">
-        <svg viewBox="0 0 210 210" width="210" height="210">
-          <circle class="ring-bg" cx="105" cy="105" r="91"/>
-          <circle class="ring-fg" id="timer-ring-fg" cx="105" cy="105" r="91" stroke-dasharray="571.8" stroke-dashoffset="0"/>
+        <svg viewBox="0 0 200 200" width="200" height="200">
+          <circle class="ring-bg" cx="100" cy="100" r="86"/>
+          <circle class="ring-fg" id="timer-ring-fg" cx="100" cy="100" r="86" stroke-dasharray="540.4" stroke-dashoffset="0"/>
         </svg>
         <div class="timer-center">
           <div class="timer-remaining" id="timer-remaining">--:--</div>
@@ -273,7 +304,7 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
         </div>
       </div>
     </div>
-    <div class="sidebar-footer" style="gap:9px">
+    <div class="sidebar-footer" style="gap:8px">
       <button class="btn btn-secondary btn-full" onclick="doExtend()">＋15分 延長</button>
       <button class="btn btn-danger btn-full" onclick="doCheckout()">チェックアウト</button>
     </div>
@@ -299,18 +330,17 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
 <div class="screen" id="screen-admin">
   <div class="sidebar">
     <div class="sidebar-logo">
-      <span class="flame-icon" style="font-size:26px">⚙️</span>
-      <div class="logo-area-name" id="admin-area-name" style="font-size:28px">篝</div>
+      <span class="flame-icon" style="font-size:24px">⚙️</span>
+      <div class="logo-area-name" id="admin-area-name" style="font-size:26px">篝</div>
       <div class="logo-area-reading" id="admin-area-reading">Kagari</div>
     </div>
-    <div style="flex:1;margin-top:16px">
-      <div class="section-label">このiPadの記録</div>
-      <div class="log-count">合計 <span id="log-total">0</span> 件のログ</div>
-      <div style="font-size:12px;color:var(--text-sub);line-height:1.8">
-        CSV出力してSharePointの<br>Excelに貼り付けてください。
-      </div>
+    <div style="flex:1;margin-top:12px">
+      <div class="section-label" style="color:rgba(255,255,255,.6)">このiPadの記録</div>
+      <div class="log-count">合計 <span id="log-total">0</span> 件</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.8">CSV出力してSharePointの<br>Excelに貼り付けてください。</div>
     </div>
     <div class="sidebar-footer">
+      <button class="reset-area-btn" onclick="resetMembers()">🔄 従業員リストを初期化</button>
       <button class="reset-area-btn" onclick="resetArea()">🔄 エリア設定を変更する</button>
       <button class="back-btn" onclick="goScreen('screen-top')" style="justify-content:center;width:100%;margin-bottom:0">← 戻る</button>
     </div>
@@ -319,14 +349,13 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
     <div class="admin-layout">
       <div>
         <div class="admin-section">
-          <div class="admin-section-title">👥 従業員リスト（全エリア共通）</div>
+          <div class="admin-section-title">👥 従業員リスト</div>
           <div class="admin-input-row">
-            <input class="admin-input" id="new-member-input" placeholder="名前（例：山田 太郎）">
-            <input class="admin-input" id="new-member-reading" placeholder="よみがな（例：やまだ たろう）">
-            <input class="admin-input" id="new-member-roman" placeholder="ローマ字（例：Yamada Taro）">
+            <input class="admin-input" id="new-member-input" placeholder="名前">
+            <input class="admin-input" id="new-member-reading" placeholder="よみがな">
+            <input class="admin-input" id="new-member-roman" placeholder="ローマ字">
             <button class="btn-icon" onclick="addMember()">追加</button>
           </div>
-          <button class="reset-area-btn" onclick="resetMembers()" style="margin-bottom:8px">🔄 従業員リストを初期化（最新データに更新）</button>
           <div class="member-list" id="admin-member-list"></div>
         </div>
       </div>
@@ -339,7 +368,7 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
           </div>
           <div class="log-wrap">
             <table>
-              <thead><tr><th>日付</th><th>利用者</th><th>開始</th><th>終了</th><th>時間</th></tr></thead>
+              <thead><tr><th>日付</th><th>利用者</th><th>開始</th><th>終了</th><th>時間</th><th></th></tr></thead>
               <tbody id="log-tbody"></tbody>
             </table>
           </div>
@@ -352,430 +381,252 @@ td{padding:7px;border-bottom:1px solid var(--border);color:var(--text-sub);}
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== STORAGE（localStorage → cookie fallback） =====
-function storageSet(key, val) {
-  try { localStorage.setItem(key, val); } catch(e) {}
-  // ログはサイズが大きいのでCookieには保存しない
-  if (key === 'su_logs') return;
-  const d = new Date(); d.setTime(d.getTime() + 365*24*60*60*1000);
-  try {
-    document.cookie = encodeURIComponent(key) + '=' + encodeURIComponent(val) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
-  } catch(e) {}
-}
-function storageGet(key) {
-  try { const v = localStorage.getItem(key); if (v !== null) return v; } catch(e) {}
-  if (key === 'su_logs') return '[]';
-  const name = encodeURIComponent(key) + '=';
-  for (let c of document.cookie.split(';')) {
-    c = c.trim();
-    if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length));
-  }
-  return null;
-}
-function storageRemove(key) {
-  try { localStorage.removeItem(key); } catch(e) {}
-  document.cookie = encodeURIComponent(key) + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
-}
+function storageSet(key,val){try{localStorage.setItem(key,val);}catch(e){}if(key==='su_logs')return;const d=new Date();d.setTime(d.getTime()+365*24*60*60*1000);try{document.cookie=encodeURIComponent(key)+'='+encodeURIComponent(val)+';expires='+d.toUTCString()+';path=/;SameSite=Lax';}catch(e){}}
+function storageGet(key){try{const v=localStorage.getItem(key);if(v!==null)return v;}catch(e){}if(key==='su_logs')return'[]';const name=encodeURIComponent(key)+'=';for(let c of document.cookie.split(';')){c=c.trim();if(c.indexOf(name)===0)return decodeURIComponent(c.substring(name.length));}return null;}
+function storageRemove(key){try{localStorage.removeItem(key);}catch(e){}document.cookie=encodeURIComponent(key)+'=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';}
 
-const SPACE_INFO = {
-  kagari:   {name:'篝',reading:'Kagari',   loc:'入口付近'},
-  tomoshibi:{name:'燈',reading:'Tomoshibi',loc:'ブレイクスペース付近'},
-};
+const SPACE_INFO={kagari:{name:'篝',reading:'Kagari',loc:'そらまめテーブル'},tomoshibi:{name:'燈',reading:'Tomoshibi',loc:'ブレイクスペース付近'}};
+const GROUPS=['すべて','取締役会','経営企画G','人事戦略G','セールス','イネーブルメント','カスタマーサポート','エンジニアリング','総務'];
 
-const DEFAULT_MEMBERS = [
-  {name:"相 空知",          reading:"あい そらち",          roman:"Ai Sorachi"},
-  {name:"青山 貴海",        reading:"あおやま たかみ",      roman:"Aoyama Takami"},
-  {name:"五十嵐 恵",        reading:"いがらし めぐみ",      roman:"Igarashi Megumi"},
-  {name:"石川 遥也",        reading:"いしかわ はるや",      roman:"Ishikawa Haruya"},
-  {name:"入江 日和子",      reading:"いりえ ひなこ",        roman:"Irie Hinako"},
-  {name:"江並 友紀",        reading:"えなみ ゆき",          roman:"Enami Yuki"},
-  {name:"片岡 健太郎",      reading:"かたおか けんたろう",  roman:"Kataoka Kentaro"},
-  {name:"木下 秀治",        reading:"きのした ひではる",    roman:"Kinoshita Hideharu"},
-  {name:"楠 由香莉",        reading:"くすのき ゆかり",      roman:"Kusunoki Yukari"},
-  {name:"許斐 夕紀恵",      reading:"このみ ゆきえ",        roman:"Konomi Yukie"},
-  {name:"坂爪 純子",        reading:"さかづめ よしこ",      roman:"Sakazume Yoshiko"},
-  {name:"佐々木 秀征",      reading:"ささき ひでゆき",      roman:"Sasaki Hideyuki"},
-  {name:"笹野 ひより",      reading:"ささの ひより",        roman:"Sasano Hiyori"},
-  {name:"Pandey Shreyansh", reading:"しゅれい",             roman:"Pandey Shreyansh"},
-  {name:"杉山 守",          reading:"すぎやま まもる",      roman:"Sugiyama Mamoru"},
-  {name:"戴 世高",          reading:"たい せいこう",        roman:"Tai Seiko"},
-  {name:"髙原 麻美",        reading:"たかはら まみ",        roman:"Takahara Mami"},
-  {name:"谷口 麻子",        reading:"たにぐち あさこ",      roman:"Taniguchi Asako"},
-  {name:"中野 諒",          reading:"なかの りょう",        roman:"Nakano Ryo"},
-  {name:"那須 瑶香",        reading:"なす ようか",          roman:"Nasu Yoka"},
-  {name:"福本 琴子",        reading:"ふくもと ことこ",      roman:"Fukumoto Kotoko"},
-  {name:"古野 佑気",        reading:"ふるの ゆうき",        roman:"Furuno Yuki"},
-  {name:"星野 直子",        reading:"ほしの なおこ",        roman:"Hoshino Naoko"},
-  {name:"松林 尚史",        reading:"まつばやし なおふみ",  roman:"Matsubayashi Naofumi"},
-  {name:"松本 理恵",        reading:"まつもと りえ",        roman:"Matsumoto Rie"},
-  {name:"三浦 耕生",        reading:"みうら こうき",        roman:"Miura Koki"},
-  {name:"三浦 隆之",        reading:"みうら たかゆき",      roman:"Miura Takayuki"},
-  {name:"向井 大倭",        reading:"むかい やまと",        roman:"Mukai Yamato"},
-  {name:"横山 隆太郎",      reading:"よこやま りゅうたろう",roman:"Yokoyama Ryutaro"},
-  {name:"井口 龍",          reading:"いぐち りゅう",        roman:"Iguchi Ryu"},
-  {name:"関口 愛海",        reading:"せきぐち まなみ",      roman:"Sekiguchi Manami"},
-  {name:"小林 雄志",        reading:"こばやし ゆうじ",      roman:"Kobayashi Yuji"},
-  {name:"上原 涼慈",        reading:"うえはら りょうじ",    roman:"Uehara Ryoji"},
-  {name:"上野 弘道",        reading:"うえの ひろみち",      roman:"Ueno Hiromichi"},
-  {name:"増川 孔明",        reading:"ますかわ こうめい",    roman:"Masukawa Komei"},
-  {name:"張 泰瑋",          reading:"ちょう たいい",        roman:"Chou Taii"},
-  {name:"陳 巍",            reading:"ちん ぎ",              roman:"Chen Wei"},
-  {name:"飯塚 直樹",        reading:"いいづか なおき",      roman:"Iizuka Naoki"},
-  {name:"野田 万琴",        reading:"のだ まこと",          roman:"Noda Makoto"},
-  {name:"長沼 斉寿",        reading:"ながぬま よしひさ",    roman:"Naganuma Yoshihisa"},
-  {name:"藤原 弘行",        reading:"ふじわら ひろゆき",    roman:"Fujiwara Hiroyuki"},
-  {name:"近藤 佑奈",        reading:"こんどう ゆうな",      roman:"Kondo Yuna"},
-  {name:"浜口 佳祐",        reading:"はまぐち けいすけ",    roman:"Hamaguchi Keisuke"},
-  {name:"小関 沙耶佳",      reading:"こせき さやか",   　　 roman:"Koseki Sayaka"},
-  {name:"Gauraang Dhamankar", reading:"ごーらん", roman:"Gauraang Dhamankar"},
-  {name:"田島 康平",        reading:"たじま こうへい",    roman:"Tajima Kohei"},
-　{name:"青柳 一也",        reading:"あおやぎ かずや",    roman:"Aoyagi Kazuya"},
-  {name:"上林 優也",        reading:"かんばやし ゆうや",    roman:"Kanbayashi Yuya"},
-  {name:"志村 美桜",        reading:"しむら みお",    roman:"Shimura Mio"},
+const DEFAULT_MEMBERS=[
+  {name:"長沼 斉寿",    reading:"ながぬま よしひさ", roman:"Naganuma Yoshihisa", group:"取締役会"},
+  {name:"松林 尚史",    reading:"まつばやし なおふみ",roman:"Matsubayashi Naofumi",group:"取締役会"},
+  {name:"片岡 健太郎",  reading:"かたおか けんたろう",roman:"Kataoka Kentaro",    group:"経営企画G"},
+  {name:"江並 友紀",    reading:"えなみ ゆき",        roman:"Enami Yuki",          group:"経営企画G"},
+  {name:"佐々木 秀征",  reading:"ささき ひでゆき",    roman:"Sasaki Hideyuki",     group:"経営企画G"},
+  {name:"福本 琴子",    reading:"ふくもと ことこ",    roman:"Fukumoto Kotoko",     group:"経営企画G"},
+  {name:"藤原 弘行",    reading:"ふじわら ひろゆき",  roman:"Fujiwara Hiroyuki",   group:"経営企画G"},
+  {name:"浅井 元",      reading:"あさい げん",        roman:"Asai Gen",            group:"経営企画G"},
+  {name:"波多野 彩杜",  reading:"はたの さいと",      roman:"Hatano Saito",        group:"経営企画G"},
+  {name:"近藤 佑奈",    reading:"こんどう ゆうな",    roman:"Kondo Yuna",          group:"人事戦略G"},
+  {name:"伊藤 飛鳥",    reading:"いとう あすか",      roman:"Ito Asuka",           group:"人事戦略G"},
+  {name:"髙原 朔美",    reading:"たかはら さくみ",    roman:"Takahara Sakumi",     group:"人事戦略G"},
+  {name:"横山 隆太郎",  reading:"よこやま りゅうたろう",roman:"Yokoyama Ryutaro",  group:"セールス"},
+  {name:"野田 万琴",    reading:"のだ まこと",        roman:"Noda Makoto",         group:"セールス"},
+  {name:"星野 直子",    reading:"ほしの なおこ",      roman:"Hoshino Naoko",       group:"セールス"},
+  {name:"井口 龍",      reading:"いぐち りゅう",      roman:"Iguchi Ryu",          group:"セールス"},
+  {name:"松本 理恵",    reading:"まつもと りえ",      roman:"Matsumoto Rie",       group:"セールス"},
+  {name:"上林 優也",    reading:"かんばやし ゆうや",  roman:"Kanbayashi Yuya",     group:"セールス"},
+  {name:"杉山 守",      reading:"すぎやま まもる",    roman:"Sugiyama Mamoru",     group:"セールス"},
+  {name:"石川 遥也",    reading:"いしかわ はるや",    roman:"Ishikawa Haruya",     group:"イネーブルメント"},
+  {name:"田島 康平",    reading:"たじま こうへい",    roman:"Tajima Kohei",        group:"イネーブルメント"},
+  {name:"笹野 ひより",  reading:"ささの ひより",      roman:"Sasano Hiyori",       group:"イネーブルメント"},
+  {name:"古野 佑気",    reading:"ふるの ゆうき",      roman:"Furuno Yuki",         group:"イネーブルメント"},
+  {name:"小関 沙耶佳",  reading:"こせき さやか",      roman:"Koseki Sayaka",       group:"イネーブルメント"},
+  {name:"関口 愛海",    reading:"せきぐち まなみ",    roman:"Sekiguchi Manami",    group:"カスタマーサポート"},
+  {name:"坂爪 純子",    reading:"さかづめ よしこ",    roman:"Sakazume Yoshiko",    group:"カスタマーサポート"},
+  {name:"楠 由香莉",    reading:"くすのき ゆかり",    roman:"Kusunoki Yukari",     group:"カスタマーサポート"},
+  {name:"浅沼 麻衣",    reading:"あさぬま まい",      roman:"Asanuma Mai",         group:"カスタマーサポート"},
+  {name:"羽山 香澄",    reading:"はやま かすみ",      roman:"Hayama Kasumi",       group:"カスタマーサポート"},
+  {name:"那須 瑶香",    reading:"なす ようか",        roman:"Nasu Yoka",           group:"エンジニアリング"},
+  {name:"木下 秀治",    reading:"きのした ひではる",  roman:"Kinoshita Hideharu",  group:"エンジニアリング"},
+  {name:"青山 貴海",    reading:"あおやま たかみ",    roman:"Aoyama Takami",       group:"エンジニアリング"},
+  {name:"入江 日和子",  reading:"いりえ ひなこ",      roman:"Irie Hinako",         group:"エンジニアリング"},
+  {name:"三浦 耕生",    reading:"みうら こうき",      roman:"Miura Koki",          group:"エンジニアリング"},
+  {name:"許斐 夕紀恵",  reading:"このみ ゆきえ",      roman:"Konomi Yukie",        group:"エンジニアリング"},
+  {name:"上野 弘道",    reading:"うえの ひろみち",    roman:"Ueno Hiromichi",      group:"エンジニアリング"},
+  {name:"相 空知",      reading:"あい そらち",        roman:"Ai Sorachi",          group:"エンジニアリング"},
+  {name:"五十嵐 恵",    reading:"いがらし めぐみ",    roman:"Igarashi Megumi",     group:"エンジニアリング"},
+  {name:"中野 諒",      reading:"なかの りょう",      roman:"Nakano Ryo",          group:"エンジニアリング"},
+  {name:"志村 美桜",    reading:"しむら みお",        roman:"Shimura Mio",         group:"エンジニアリング"},
+  {name:"青柳 一也",    reading:"あおやぎ かずや",    roman:"Aoyagi Kazuya",       group:"エンジニアリング"},
+  {name:"張 泰瑋",      reading:"ちょう たいい",      roman:"Chou Taii",           group:"エンジニアリング"},
+  {name:"Pandey Shreyansh",reading:"しゅれい",        roman:"Pandey Shreyansh",    group:"エンジニアリング"},
+  {name:"Gauraang Dhamankar",reading:"ごーらん",      roman:"Gauraang Dhamankar",  group:"エンジニアリング"},
+  {name:"Wong Ming Kwan",reading:"うぉん",      　　　roman:"Wong Ming Kwan",  　　group:"エンジニアリング"},
+  {name:"戴 世高",      reading:"たい せいこう",      roman:"Tai Seiko",           group:"エンジニアリング"},
+  {name:"陳 巍",        reading:"ちん ぎ",            roman:"Chen Wei",            group:"エンジニアリング"},
+  {name:"増川 孔明",    reading:"ますかわ こうめい",  roman:"Masukawa Komei",      group:"エンジニアリング"},
+  {name:"上原 涼慈",    reading:"うえはら りょうじ",  roman:"Uehara Ryoji",        group:"エンジニアリング"},
+  {name:"飯塚 直樹",    reading:"いいづか なおき",    roman:"Iizuka Naoki",        group:"エンジニアリング"},
 ];
 
-let state = {
-  areaKey:  null,
-  members:  null,
-  logs:     [],
-  session:  null,
-  selectedMembers: [],
-  selectedMinutes: null,
-};
-try { state.areaKey = storageGet('su_area') || null; } catch(e) {}
-try { state.logs = JSON.parse(storageGet('su_logs') || '[]'); } catch(e) { state.logs = []; }
-try { state.session = JSON.parse(storageGet('su_session') || 'null'); } catch(e) { state.session = null; }
+let state={areaKey:null,members:null,logs:[],session:null,selectedMembers:[],selectedMinutes:null,currentGroup:'すべて'};
+try{state.areaKey=storageGet('su_area')||null;}catch(e){}
+try{state.logs=JSON.parse(storageGet('su_logs')||'[]');}catch(e){state.logs=[];}
+try{state.session=JSON.parse(storageGet('su_session')||'null');}catch(e){state.session=null;}
+try{
+  const saved=JSON.parse(storageGet('su_members')||'null');
+  if(!saved){state.members=DEFAULT_MEMBERS.map(m=>({...m}));}
+  else if(saved.length>0&&typeof saved[0]==='string'){state.members=saved.map(name=>{const f=DEFAULT_MEMBERS.find(m=>m.name===name);return f?{...f}:{name,reading:'',roman:'',group:''};});storageSet('su_members',JSON.stringify(state.members));}
+  else{state.members=saved;}
+}catch(e){state.members=DEFAULT_MEMBERS.map(m=>({...m}));}
+let timerInterval=null;
 
-// メンバーデータのマイグレーション（古い文字列形式 → 新しいオブジェクト形式）
-try {
-  const savedMembers = JSON.parse(storageGet('su_members') || 'null');
-  if (!savedMembers) {
-    state.members = DEFAULT_MEMBERS.map(m => ({...m}));
-  } else if (savedMembers.length > 0 && typeof savedMembers[0] === 'string') {
-    state.members = savedMembers.map(name => {
-      const found = DEFAULT_MEMBERS.find(m => m.name === name);
-      return found ? {...found} : {name, reading: '', email: ''};
-    });
-    storageSet('su_members', JSON.stringify(state.members));
-  } else {
-    state.members = savedMembers;
-  }
-} catch(e) {
-  state.members = DEFAULT_MEMBERS.map(m => ({...m}));
-  storageSet('su_members', JSON.stringify(state.members));
-}
-let timerInterval = null;
+function save(){storageSet('su_area',state.areaKey||'');storageSet('su_members',JSON.stringify(state.members));storageSet('su_logs',JSON.stringify(state.logs));storageSet('su_session',JSON.stringify(state.session));}
+function hardReset(){if(!confirm('全データをリセットします。よいですか？'))return;try{localStorage.clear();}catch(e){}document.cookie.split(';').forEach(c=>{document.cookie=c.trim().split('=')[0]+'=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';});location.reload();}
+function setupArea(key){state.areaKey=key;save();initArea();}
+function resetArea(){if(!confirm('エリア設定をリセットしますか？'))return;state.areaKey=null;storageRemove('su_area');goScreen('screen-setup');}
+function resetMembers(){if(!confirm('従業員リストを最新データにリセットします。よいですか？'))return;state.members=DEFAULT_MEMBERS.map(m=>({...m}));save();renderAdminMembers();showToast('従業員リストを初期化しました');}
 
-function save() {
-  storageSet('su_area',    state.areaKey || '');
-  storageSet('su_members', JSON.stringify(state.members));
-  storageSet('su_logs',    JSON.stringify(state.logs));
-  storageSet('su_session', JSON.stringify(state.session));
-}
-
-function hardReset() {
-  if (!confirm('全データをリセットします。ログも消えます。よいですか？')) return;
-  try { localStorage.clear(); } catch(e) {}
-  // 全Cookieを削除
-  document.cookie.split(';').forEach(c => {
-    document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
-  });
-  location.reload();
-}
-
-// ===== SETUP =====
-function setupArea(key) {
-  state.areaKey = key;
-  save();
-  initArea();
-}
-function resetArea() {
-  if (!confirm('エリア設定をリセットしますか？')) return;
-  state.areaKey = null; storageRemove('su_area'); goScreen('screen-setup');
-}
-function initArea() {
-  try {
-    const key = state.areaKey;
-    if (!key) { goScreen('screen-setup'); return; }
-    const info = SPACE_INFO[key];
-    ['top','mem','time','inuse','admin'].forEach(p => {
-      const n = document.getElementById(p+'-area-name');
-      const r = document.getElementById(p+'-area-reading');
-      if (n) n.textContent = info.name;
-      if (r) r.textContent = info.reading;
-    });
-    document.getElementById('top-area-loc').textContent = info.loc;
-    document.getElementById('log-section-title').textContent = `📋 利用ログ（${info.name}）`;
-    const s = state.session;
-    if (s && s.active) {
-      if (new Date(s.endTime) <= new Date()) autoCheckout();
-      else { showInuse(); return; }
-    }
+function initArea(){
+  try{
+    const key=state.areaKey;if(!key){goScreen('screen-setup');return;}
+    const info=SPACE_INFO[key];
+    ['top','mem','time','inuse','admin'].forEach(p=>{const n=document.getElementById(p+'-area-name');const r=document.getElementById(p+'-area-reading');if(n)n.textContent=info.name;if(r)r.textContent=info.reading;});
+    document.getElementById('top-area-loc').textContent=info.loc;
+    document.getElementById('log-section-title').textContent=`📋 利用ログ（${info.name}）`;
+    const urlParams=new URLSearchParams(window.location.search);
+    if(urlParams.get('admin')==='true'){const btn=document.getElementById('admin-entry-btn');if(btn)btn.style.display='block';}
+    const s=state.session;
+    if(s&&s.active){if(new Date(s.endTime)<=new Date())autoCheckout();else{showInuse();return;}}
     goScreen('screen-top');
-  } catch(e) {
-    // データが壊れている場合はリセット
-    storageRemove('su_session');
-    storageRemove('su_members');
-    state.session = null;
-    state.members = DEFAULT_MEMBERS.map(m => ({...m}));
-    save();
-    goScreen('screen-top');
-  }
+  }catch(e){storageRemove('su_session');state.session=null;state.members=DEFAULT_MEMBERS.map(m=>({...m}));save();goScreen('screen-top');}
 }
 
-// ===== NAV =====
-function goScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function goAdmin() {
-  renderAdminMembers(); renderLog(); goScreen('screen-admin');
-}
+function goScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goAdmin(){renderAdminMembers();renderLog();goScreen('screen-admin');}
 
-// ===== CHECKIN FLOW =====
-function startCheckin() {
-  state.selectedMembers = []; state.selectedMinutes = null;
-  document.getElementById('member-search').value = '';
-  renderMemberGrid(); goScreen('screen-members');
-}
-function renderMemberGrid() {
-  const q = document.getElementById('member-search').value.toLowerCase();
-  const filtered = state.members.filter(m => {
-    const name = (typeof m === 'string') ? m : m.name;
-    const reading = (typeof m === 'string') ? '' : (m.reading || '');
-    const roman = (typeof m === 'string') ? '' : (m.roman || m.email || '');
-    return name.toLowerCase().includes(q) || reading.includes(q) || roman.toLowerCase().includes(q);
+function startCheckin(){state.selectedMembers=[];state.selectedMinutes=null;state.currentGroup='すべて';document.getElementById('member-search').value='';renderGroupTabs();renderMemberGrid();goScreen('screen-members');}
+
+function renderGroupTabs(){document.getElementById('group-tabs').innerHTML=GROUPS.map(g=>`<div class="group-tab${g===state.currentGroup?' active':''}" onclick="selectGroup('${g}')">${g}</div>`).join('');}
+function selectGroup(g){state.currentGroup=g;renderGroupTabs();renderMemberGrid();}
+
+function renderMemberGrid(){
+  const q=document.getElementById('member-search').value.toLowerCase();
+  const filtered=state.members.filter(m=>{
+    const name=(typeof m==='string')?m:m.name;
+    const reading=(typeof m==='string')?'':(m.reading||'');
+    const roman=(typeof m==='string')?'':(m.roman||m.email||'');
+    const group=(typeof m==='string')?'':(m.group||'');
+    const matchSearch=!q||name.toLowerCase().includes(q)||reading.includes(q)||roman.toLowerCase().includes(q);
+    const matchGroup=state.currentGroup==='すべて'||group===state.currentGroup;
+    return matchSearch&&matchGroup;
   });
-  document.getElementById('member-grid').innerHTML = filtered.map(m => {
-    const name = (typeof m === 'string') ? m : m.name;
-    const sel = state.selectedMembers.includes(name);
-    return `<div class="member-chip${sel?' selected':''}" onclick="toggleMember('${name}')">
-      <div class="m-avatar">${name.replace(/\s+/g,'').slice(0,2)}</div>
-      <div class="m-name">${name}</div></div>`;
+  document.getElementById('member-grid').innerHTML=filtered.map(m=>{
+    const name=(typeof m==='string')?m:m.name;
+    const group=(typeof m==='string')?'':(m.group||'');
+    const sel=state.selectedMembers.includes(name);
+    return `<div class="member-chip${sel?' selected':''}" onclick="toggleMember('${name}')"><div class="m-avatar">${name.replace(/\s+/g,'').slice(0,2)}</div><div class="m-name">${name}</div><div class="m-group">${group}</div></div>`;
   }).join('');
-  const cnt = state.selectedMembers.length;
-  document.getElementById('sel-count').textContent = cnt;
-  document.getElementById('sel-tags').innerHTML = state.selectedMembers.map(m=>`<span class="sel-tag">${m}</span>`).join('');
-  document.getElementById('btn-next-time').disabled = cnt < 2;
+  const cnt=state.selectedMembers.length;
+  document.getElementById('sel-count').textContent=cnt;
+  document.getElementById('sel-tags').innerHTML=state.selectedMembers.map(m=>`<span class="sel-tag">${m}</span>`).join('');
+  document.getElementById('btn-next-time').disabled=cnt<2;
 }
-function filterMembers() { renderMemberGrid(); }
-function toggleMember(name) {
-  const idx = state.selectedMembers.indexOf(name);
-  if (idx===-1) state.selectedMembers.push(name); else state.selectedMembers.splice(idx,1);
-  renderMemberGrid();
-}
-function goToTime() {
-  if (state.selectedMembers.length < 2) return;
-  state.selectedMinutes = null;
+function onSearch(){state.currentGroup='すべて';renderGroupTabs();renderMemberGrid();}
+function toggleMember(name){const idx=state.selectedMembers.indexOf(name);if(idx===-1)state.selectedMembers.push(name);else state.selectedMembers.splice(idx,1);renderMemberGrid();}
+
+function goToTime(){
+  if(state.selectedMembers.length<2)return;
+  state.selectedMinutes=null;
   document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected'));
-  const info = SPACE_INFO[state.areaKey];
-  document.getElementById('confirm-card').innerHTML = `<b>エリア：</b>${info.name}<br><b>利用者：</b>${state.selectedMembers.join('、')}<br><b>時間：</b><span id="confirm-time-val">未選択</span>`;
-  document.getElementById('btn-checkin').disabled = true;
+  const info=SPACE_INFO[state.areaKey];
+  document.getElementById('confirm-card').innerHTML=`<b>エリア：</b>${info.name}<br><b>利用者：</b>${state.selectedMembers.join('、')}<br><b>時間：</b><span id="confirm-time-val">未選択</span>`;
+  document.getElementById('btn-checkin').disabled=true;
   goScreen('screen-time');
 }
-function selectTime(min) {
-  state.selectedMinutes = min;
+function selectTime(min){
+  state.selectedMinutes=min;
   document.querySelectorAll('.time-btn').forEach(b=>b.classList.toggle('selected',parseInt(b.querySelector('.t-min').textContent)===min));
-  const el = document.getElementById('confirm-time-val'); if(el) el.textContent=min+'分';
-  document.getElementById('btn-checkin').disabled = false;
+  const el=document.getElementById('confirm-time-val');if(el)el.textContent=min+'分';
+  document.getElementById('btn-checkin').disabled=false;
 }
-// ===== SOUND =====
-function playSound(type) {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (type === 'checkin') {
-      // マッチをつける音：短いシュッ→パチッ
-      // ① こすり音（ノイズ）
-      const bufSize = ctx.sampleRate * 0.12;
-      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
-      const noise = ctx.createBufferSource();
-      noise.buffer = buf;
-      const noiseFilter = ctx.createBiquadFilter();
-      noiseFilter.type = 'bandpass';
-      noiseFilter.frequency.value = 3000;
-      noiseFilter.Q.value = 0.8;
-      const noiseGain = ctx.createGain();
-      noiseGain.gain.setValueAtTime(0.0, ctx.currentTime);
-      noiseGain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.04);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(ctx.destination);
-      noise.start(ctx.currentTime); noise.stop(ctx.currentTime + 0.12);
-
-      // ② パチッ（点火音）
-      const clickBuf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
-      const clickData = clickBuf.getChannelData(0);
-      for (let i = 0; i < clickData.length; i++) clickData[i] = (Math.random() * 2 - 1) * Math.exp(-i / 200);
-      const click = ctx.createBufferSource();
-      click.buffer = clickBuf;
-      const clickGain = ctx.createGain();
-      clickGain.gain.setValueAtTime(1.2, ctx.currentTime + 0.1);
-      clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-      click.connect(clickGain); clickGain.connect(ctx.destination);
-      click.start(ctx.currentTime + 0.1); click.stop(ctx.currentTime + 0.2);
-
-      // ③ 点火後の小さな炎音
-      const flameBufSize = ctx.sampleRate * 0.4;
-      const flameBuf = ctx.createBuffer(1, flameBufSize, ctx.sampleRate);
-      const flameData = flameBuf.getChannelData(0);
-      for (let i = 0; i < flameBufSize; i++) flameData[i] = (Math.random() * 2 - 1);
-      const flame = ctx.createBufferSource();
-      flame.buffer = flameBuf;
-      const flameFilter = ctx.createBiquadFilter();
-      flameFilter.type = 'lowpass';
-      flameFilter.frequency.value = 800;
-      const flameGain = ctx.createGain();
-      flameGain.gain.setValueAtTime(0.0, ctx.currentTime + 0.18);
-      flameGain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.25);
-      flameGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
-      flame.connect(flameFilter); flameFilter.connect(flameGain); flameGain.connect(ctx.destination);
-      flame.start(ctx.currentTime + 0.18); flame.stop(ctx.currentTime + 0.6);
-
-    } else if (type === 'checkout') {
-      // 炎が燃える音：ゆらゆら揺れるノイズ
-      const duration = 1.8;
-      const bufSize = ctx.sampleRate * duration;
-      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
-
-      const source = ctx.createBufferSource();
-      source.buffer = buf;
-
-      // 低周波フィルター（炎のこもった音）
-      const lowFilter = ctx.createBiquadFilter();
-      lowFilter.type = 'lowpass';
-      lowFilter.frequency.value = 600;
-      lowFilter.Q.value = 1.2;
-
-      // ゆらぎLFO
-      const lfo = ctx.createOscillator();
-      const lfoGain = ctx.createGain();
-      lfo.frequency.value = 6; // 6Hzでゆらぐ
-      lfoGain.gain.value = 200;
-      lfo.connect(lfoGain);
-      lfoGain.connect(lowFilter.frequency);
-
-      // メインゲイン（フェードイン→フェードアウト）
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.3);
-      gain.gain.setValueAtTime(0.5, ctx.currentTime + 1.0);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-
-      source.connect(lowFilter); lowFilter.connect(gain); gain.connect(ctx.destination);
-      lfo.start(ctx.currentTime); lfo.stop(ctx.currentTime + duration);
-      source.start(ctx.currentTime); source.stop(ctx.currentTime + duration);
-    }
-  } catch(e) {}
+function doCheckin(){
+  const now=new Date(),end=new Date(now.getTime()+state.selectedMinutes*60000);
+  state.session={active:true,areaKey:state.areaKey,spaceName:SPACE_INFO[state.areaKey].name,members:[...state.selectedMembers],startTime:now.toISOString(),endTime:end.toISOString()};
+  save();playSound('checkin');showInuse();showToast('チェックインしました 🔥');
 }
-
-function doCheckin() {
-  const now = new Date(), end = new Date(now.getTime()+state.selectedMinutes*60000);
-  state.session = {active:true,areaKey:state.areaKey,spaceName:SPACE_INFO[state.areaKey].name,members:[...state.selectedMembers],startTime:now.toISOString(),endTime:end.toISOString()};
-  save(); playSound('checkin'); showInuse(); showToast('チェックインしました 🔥');
+function showInuse(){
+  const s=state.session;
+  document.getElementById('inuse-space-val').textContent=s.spaceName+'（'+SPACE_INFO[s.areaKey].loc+'）';
+  document.getElementById('inuse-members').textContent=s.members.join('、');
+  document.getElementById('inuse-start').textContent=formatTime(new Date(s.startTime));
+  document.getElementById('inuse-end').textContent=formatTime(new Date(s.endTime));
+  goScreen('screen-inuse');startTimer();
 }
-
-// ===== INUSE =====
-function showInuse() {
-  const s = state.session;
-  document.getElementById('inuse-space-val').textContent = s.spaceName+'（'+SPACE_INFO[s.areaKey].loc+'）';
-  document.getElementById('inuse-members').textContent = s.members.join('、');
-  document.getElementById('inuse-start').textContent = formatTime(new Date(s.startTime));
-  document.getElementById('inuse-end').textContent = formatTime(new Date(s.endTime));
-  goScreen('screen-inuse'); startTimer();
-}
-function startTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{
-    const s=state.session; if(!s||!s.active){clearInterval(timerInterval);return;}
+function startTimer(){
+  if(timerInterval)clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    const s=state.session;if(!s||!s.active){clearInterval(timerInterval);return;}
     const now=new Date(),end=new Date(s.endTime),remaining=Math.max(0,end-now),total=end-new Date(s.startTime);
     document.getElementById('timer-remaining').textContent=`${String(Math.floor(remaining/60000)).padStart(2,'0')}:${String(Math.floor((remaining%60000)/1000)).padStart(2,'0')}`;
-    document.getElementById('timer-ring-fg').style.strokeDashoffset=571.8*(1-remaining/total);
+    document.getElementById('timer-ring-fg').style.strokeDashoffset=540.4*(1-remaining/total);
     if(remaining===0){clearInterval(timerInterval);autoCheckout();}
   },1000);
 }
-function doExtend() {
-  const newEnd=new Date(new Date(state.session.endTime).getTime()+15*60000);
-  state.session.endTime=newEnd.toISOString();
-  document.getElementById('inuse-end').textContent=formatTime(newEnd);
-  save(); showToast('15分延長しました');
-}
-function doCheckout() { recordLog(false); playSound('checkout'); clearInterval(timerInterval); goScreen('screen-top'); showToast('チェックアウトしました'); }
-function autoCheckout() { recordLog(true); showToast('時間になりました。自動チェックアウトしました。'); setTimeout(()=>goScreen('screen-top'),2000); }
-function recordLog(auto) {
-  const s=state.session; if(!s) return;
-  const now=new Date(), diffMin=Math.round((now-new Date(s.startTime))/60000);
+function doExtend(){const newEnd=new Date(new Date(state.session.endTime).getTime()+15*60000);state.session.endTime=newEnd.toISOString();document.getElementById('inuse-end').textContent=formatTime(newEnd);save();showToast('15分延長しました');}
+function doCheckout(){recordLog(false);playSound('checkout');clearInterval(timerInterval);goScreen('screen-top');showToast('チェックアウトしました');}
+function autoCheckout(){recordLog(true);showToast('時間になりました。自動チェックアウトしました。');setTimeout(()=>goScreen('screen-top'),2000);}
+function recordLog(auto){
+  const s=state.session;if(!s)return;
+  const now=new Date(),diffMin=Math.round((now-new Date(s.startTime))/60000);
   state.logs.unshift({date:formatDate(new Date(s.startTime)),area:s.spaceName,members:s.members.join('、'),start:formatTime(new Date(s.startTime)),end:formatTime(now),duration:diffMin+'分',auto});
-  state.session=null; save();
+  state.session=null;save();
 }
 
-// ===== ADMIN =====
-function resetMembers() {
-  if (!confirm('従業員リストを最新データにリセットします。手動追加したメンバーは削除されます。よいですか？')) return;
-  state.members = DEFAULT_MEMBERS.map(m => ({...m}));
-  save(); renderAdminMembers();
-  showToast('従業員リストを初期化しました');
-}
-function renderAdminMembers() {
-  document.getElementById('admin-member-list').innerHTML = state.members.map(m=>{
-    const name = (typeof m === 'string') ? m : m.name;
-    const reading = (typeof m === 'string') ? '' : (m.reading || '');
-    const roman = (typeof m === 'string') ? '' : (m.roman || m.email || '');
-    return `<div class="member-list-tag">${name}${reading?`<span style="font-size:10px;color:var(--text-muted);margin-left:3px">（${reading} / ${roman}）</span>`:''}<button class="del-btn" onclick="removeMember('${name}')">×</button></div>`;
+function renderAdminMembers(){
+  document.getElementById('admin-member-list').innerHTML=state.members.map(m=>{
+    const name=(typeof m==='string')?m:m.name;
+    return `<div class="member-list-tag">${name}<button class="del-btn" onclick="removeMember('${name}')">×</button></div>`;
   }).join('');
 }
-function addMember() {
+function addMember(){
   const input=document.getElementById('new-member-input'),name=input.value.trim();
-  const readingInput=document.getElementById('new-member-reading');
-  const romanInput=document.getElementById('new-member-roman');
-  const reading=readingInput ? readingInput.value.trim() : '';
-  const roman=romanInput ? romanInput.value.trim() : '';
-  if(!name||state.members.find(m=>(typeof m==='string'?m:m.name)===name)) return;
-  state.members.push({name, reading, roman}); input.value='';
-  if(readingInput) readingInput.value='';
-  if(romanInput) romanInput.value='';
-  save(); renderAdminMembers(); showToast(name+' を追加しました');
+  const reading=document.getElementById('new-member-reading')?.value.trim()||'';
+  const roman=document.getElementById('new-member-roman')?.value.trim()||'';
+  if(!name||state.members.find(m=>(typeof m==='string'?m:m.name)===name))return;
+  state.members.push({name,reading,roman,group:''});input.value='';
+  document.getElementById('new-member-reading').value='';
+  document.getElementById('new-member-roman').value='';
+  save();renderAdminMembers();showToast(name+' を追加しました');
 }
-function removeMember(name) {
-  if(!confirm(name+' を削除しますか？')) return;
-  state.members=state.members.filter(m=>(typeof m==='string'?m:m.name)!==name);
-  save(); renderAdminMembers();
+function removeMember(name){if(!confirm(name+' を削除しますか？'))return;state.members=state.members.filter(m=>(typeof m==='string'?m:m.name)!==name);save();renderAdminMembers();}
+function renderLog(){
+  document.getElementById('log-total').textContent=state.logs.length;
+  document.getElementById('log-tbody').innerHTML=state.logs.length===0
+    ?'<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:12px">記録がありません</td></tr>'
+    :state.logs.map((l,i)=>`<tr><td>${l.date}</td><td>${l.members}</td><td>${l.start}</td><td>${l.end}${l.auto?'<span style="font-size:9px;color:var(--text-muted)"> 自動</span>':''}</td><td>${l.duration}</td><td><button onclick="deleteLog(${i})" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;padding:1px 5px;">×</button></td></tr>`).join('');
 }
-function renderLog() {
-  document.getElementById('log-total').textContent = state.logs.length;
-  document.getElementById('log-tbody').innerHTML = state.logs.length===0
-    ? '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px">記録がありません</td></tr>'
-    : state.logs.map(l=>`<tr><td>${l.date}</td><td>${l.members}</td><td>${l.start}</td><td>${l.end}${l.auto?'<span style="font-size:10px;color:var(--text-muted)"> 自動</span>':''}</td><td>${l.duration}</td></tr>`).join('');
-}
-function exportCSV() {
+function deleteLog(i){if(!confirm('このログを削除しますか？'))return;state.logs.splice(i,1);save();renderLog();showToast('削除しました');}
+function exportCSV(){
   if(!state.logs.length){showToast('ログがありません');return;}
   const info=SPACE_INFO[state.areaKey];
-  const bom='\uFEFF', csv=bom+[['日付','エリア','利用者','開始時刻','終了時刻','利用時間'],
-    ...state.logs.map(l=>[l.date,l.area,l.members,l.start,l.end,l.duration])
-  ].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  a.download=`${info.name}_利用ログ_${formatDate(new Date()).replace(/\//g,'-')}.csv`;
-  a.click(); showToast('CSVを出力しました');
+  const bom='\uFEFF',csv=bom+[['日付','エリア','利用者','開始時刻','終了時刻','利用時間'],...state.logs.map(l=>[l.date,l.area,l.members,l.start,l.end,l.duration])].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`${info.name}_利用ログ_${formatDate(new Date()).replace(/\//g,'-')}.csv`;a.click();showToast('CSVを出力しました');
 }
-function clearLog() {
-  if(!confirm('このiPadの全ログを削除します。よいですか？')) return;
-  state.logs=[]; save(); renderLog(); showToast('ログをクリアしました');
+function clearLog(){if(!confirm('全ログを削除します。よいですか？'))return;state.logs=[];save();renderLog();showToast('ログをクリアしました');}
+
+function playSound(type){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    if(type==='checkin'){
+      const bs=ctx.sampleRate*.12,b=ctx.createBuffer(1,bs,ctx.sampleRate),d=b.getChannelData(0);
+      for(let i=0;i<bs;i++)d[i]=(Math.random()*2-1);
+      const n=ctx.createBufferSource(),nf=ctx.createBiquadFilter(),ng=ctx.createGain();
+      nf.type='bandpass';nf.frequency.value=3000;nf.Q.value=.8;
+      ng.gain.setValueAtTime(0,ctx.currentTime);ng.gain.linearRampToValueAtTime(.6,ctx.currentTime+.04);ng.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.12);
+      n.buffer=b;n.connect(nf);nf.connect(ng);ng.connect(ctx.destination);n.start();n.stop(ctx.currentTime+.12);
+      const cb=ctx.createBuffer(1,ctx.sampleRate*.05,ctx.sampleRate),cd=cb.getChannelData(0);
+      for(let i=0;i<cd.length;i++)cd[i]=(Math.random()*2-1)*Math.exp(-i/200);
+      const ck=ctx.createBufferSource(),cg=ctx.createGain();
+      cg.gain.setValueAtTime(1.2,ctx.currentTime+.1);cg.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.18);
+      ck.buffer=cb;ck.connect(cg);cg.connect(ctx.destination);ck.start(ctx.currentTime+.1);ck.stop(ctx.currentTime+.2);
+      const fb=ctx.sampleRate*.4,fbuf=ctx.createBuffer(1,fb,ctx.sampleRate),fd=fbuf.getChannelData(0);
+      for(let i=0;i<fb;i++)fd[i]=(Math.random()*2-1);
+      const fl=ctx.createBufferSource(),ff=ctx.createBiquadFilter(),fg=ctx.createGain();
+      ff.type='lowpass';ff.frequency.value=800;
+      fg.gain.setValueAtTime(0,ctx.currentTime+.18);fg.gain.linearRampToValueAtTime(.25,ctx.currentTime+.25);fg.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.55);
+      fl.buffer=fbuf;fl.connect(ff);ff.connect(fg);fg.connect(ctx.destination);fl.start(ctx.currentTime+.18);fl.stop(ctx.currentTime+.6);
+    }else{
+      const dur=1.8,bsz=ctx.sampleRate*dur,buf=ctx.createBuffer(1,bsz,ctx.sampleRate),data=buf.getChannelData(0);
+      for(let i=0;i<bsz;i++)data[i]=(Math.random()*2-1);
+      const src=ctx.createBufferSource(),lf=ctx.createBiquadFilter(),lfo=ctx.createOscillator(),lg=ctx.createGain(),g=ctx.createGain();
+      lf.type='lowpass';lf.frequency.value=600;lf.Q.value=1.2;lfo.frequency.value=6;lg.gain.value=200;
+      lfo.connect(lg);lg.connect(lf.frequency);
+      g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(.5,ctx.currentTime+.3);g.gain.setValueAtTime(.5,ctx.currentTime+1);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+dur);
+      src.buffer=buf;src.connect(lf);lf.connect(g);g.connect(ctx.destination);lfo.start();lfo.stop(ctx.currentTime+dur);src.start();src.stop(ctx.currentTime+dur);
+    }
+  }catch(e){}
 }
 
-// ===== UTILS =====
 function formatTime(d){return`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
 function formatDate(d){return`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-// INIT - URLパラメータ ?admin=true の場合のみ管理ボタンを表示
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('admin') === 'true') {
-  const btn = document.getElementById('admin-entry-btn');
-  if (btn) btn.style.display = 'block';
-}
+const urlParams=new URLSearchParams(window.location.search);
+if(urlParams.get('admin')==='true'){const btn=document.getElementById('admin-entry-btn');if(btn)btn.style.display='block';}
 initArea();
 </script>
 </body>
